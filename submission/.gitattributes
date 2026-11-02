@@ -1,3 +1,0 @@
-# Frozen assignment/checksum files must retain original bytes on every OS.
-# Disable staging/checkout line-ending conversion; textual diffs remain available.
-* -text

@@ -55,7 +55,7 @@ evaluation/    Manual scoring and report generation (module commands)
 scripts/       Validation, deterministic ZIP packaging and publication helpers
 tests/         Offline regression tests; live inference explicitly opt-in
 index/         Local Chroma index and chunks, excluded from Git and submission
-submission/    Standalone reviewed assignment package, without indexes or secrets
+submission/    Local historical package, ignored; download the release ZIP
 ```
 
 `rag_eval.py` is the CLI. The frozen runtime files `rag_eval.py`,
@@ -119,7 +119,6 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe sources.py verify
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 .\.venv\Scripts\python.exe -m scripts.verify_submission --offline
-.\.venv\Scripts\python.exe -m scripts.verify_submission --offline --package submission
 .\.venv\Scripts\python.exe -m scripts.publication_audit --check
 ```
 
@@ -185,7 +184,7 @@ change pagination and should not be represented as the original evaluation.
 ## CI and publication
 
 [GitHub Actions](.github/workflows/ci.yml) uses Python3.12 and read-only repository
-permissions, installs minimal test dependencies, runs offline tests and both package validators,
+permissions, installs minimal test dependencies, runs offline tests and artifact validation,
 and audits publication paths/secret patterns. It has no credentials, Ollama service
 or model download step. Dependency installation needs package-repository access.
 GitHub Actions is checked against the exact pushed commit during publication.
@@ -195,22 +194,23 @@ External credentials, environments, caches and indexes remain excluded.
 
 ## Submission and validation status
 
-The standalone submission is `submission/`. The analysis is titled **Evaluating Retrieval-Augmented Generation on BLS Labor Market Reports** and is supplied as `submission/artifacts/reflection.docx` and `submission/artifacts/reflection.pdf`. Comparison and source/reference tables, raw JSONL, CSV results, judgments, and manifests are in its `artifacts/` directory.
+The verified standalone submission is the [release ZIP](https://github.com/ssilva9912/bls-labor-market-rag/releases/tag/submission-v1). The historical `submission/` directory remains local and ignored. The analysis is titled **Evaluating Retrieval-Augmented Generation on BLS Labor Market Reports** and is supplied as `submission/artifacts/reflection.docx` and `submission/artifacts/reflection.pdf`. Comparison and source/reference tables, raw JSONL, CSV results, judgments, and manifests are in its `artifacts/` directory.
 
 The current analysis is [reflection.pdf](artifacts/reflection.pdf), with the
 [comparison table](artifacts/comparison.md) and [eight source PDFs](docs/).
 [GitHub releases](https://github.com/ssilva9912/bls-labor-market-rag/releases)
-is the intended download location; no submission ZIP upload is verified yet.
-The existing tracked `submission/` is preserved unchanged until a complete ZIP
-has been verified and uploaded successfully. Its older standalone commands
-remain valid within that historical package.
+contains `submission-v1`, uploaded and downloaded with matching SHA-256
+`12fcfcfe673e514316313293f54b9092a7a86210ddd7539b45c38bcb6ab94324`.
+The duplicate `submission/` was untracked only after that verification; local
+files were preserved. Its older standalone commands remain valid locally.
 
 Build the current complete assignment without touching the local submission:
 `python -m scripts.package_submission`. It writes
 `tmp/bls-labor-market-rag-submission.zip`, uses sorted entries and fixed metadata,
 and verifies PDF provenance, frozen bindings and every archived checksum.
-Attach that ZIP to a GitHub release before using `git rm -r --cached submission`
-and adding `/submission/` to `.gitignore`. Never delete the local directory.
+The published release is tied to commit `41cfc5d`, whose matching Actions run passed.
+Future builds reflect the current repository; the published ZIP preserves that reviewed version.
+Never delete the local submission directory as part of publication.
 Captured HTML is required reference data: the unchanged source inventory binds
 each snapshot's path and hash, and source validation checks those bytes.
 Only those HTML snapshots are marked linguist-vendored; application code remains visible.

@@ -21,12 +21,12 @@ try {
 & $python -m unittest discover -s tests -v; Check-Exit 'Offline tests'
 & $python sources.py verify; Check-Exit 'Source verification'
 & $python -m scripts.verify_submission --offline; Check-Exit 'Project artifact verification'
-& $python -m scripts.verify_submission --offline --package submission; Check-Exit 'Submission verification'
+if (Test-Path -LiteralPath 'submission/freeze_manifest.json') { & $python -m scripts.verify_submission --offline --package submission; Check-Exit 'Submission verification' }
 }
 # Always rerun focused coverage and publication scanning, including on resume.
 & $python -m unittest discover -s tests -p test_publication_audit.py -v; Check-Exit 'Audit regression tests'
 if ($ResumePublication) {
-  & $python -m scripts.verify_submission --offline --package submission; Check-Exit 'Updated submission verification'
+  & $python -m scripts.verify_submission --offline; Check-Exit 'Artifact verification'
 }
 & $python -m scripts.publication_audit --check; Check-Exit 'Publication audit'
 gh auth status

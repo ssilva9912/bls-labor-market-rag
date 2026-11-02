@@ -37,7 +37,6 @@ jobs:
         run: |
           python sources.py verify
           python -m scripts.verify_submission --offline
-          python -m scripts.verify_submission --offline --package submission
       - name: Publication inventory and secret-pattern check
         run: python -m scripts.publication_audit --check
       - name: Build and verify reproducible complete assignment ZIP

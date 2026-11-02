@@ -36,7 +36,7 @@ PATTERNS={'private_key':re.compile(r'-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KE
  'aws_access_key':re.compile(r'\b(?:AKIA|ASIA)[A-Z0-9]{16}\b'),
  'openai_key':re.compile(r'\bsk-(?:proj-)?[A-Za-z0-9_-]{32,}'),
  'literal_secret_assignment':re.compile(r'''(?im)^\s*(?:[A-Z_]*(?:API_KEY|ACCESS_TOKEN|CLIENT_SECRET|PASSWORD))\s*=\s*["']?[A-Za-z0-9_+/=-]{20,}''')}
-def candidates():return sorted(p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file() and permitted(p.relative_to(ROOT).as_posix()))
+def candidates():return sorted(p.relative_to(ROOT).as_posix() for p in ROOT.rglob('*') if p.is_file() and not p.relative_to(ROOT).as_posix().startswith('submission/') and permitted(p.relative_to(ROOT).as_posix()))
 def publication_text(path):
     """Use strict supported decoders and document readers; never discard bytes."""
     import zipfile
@@ -95,6 +95,6 @@ def main():
             for name in paths:
                 target=Path(d)/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
             env=dict(os.environ,HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',PYTHONDONTWRITEBYTECODE='1',RUN_LIVE_OLLAMA_TESTS='0',RUN_LIVE_RETRIEVAL_TESTS='0')
-            for command in [['-m','unittest','discover','-s','tests','-v'],['-m','scripts.verify_submission','--offline'],['-m','scripts.verify_submission','--offline','--package','submission'],['-m','scripts.publication_audit','--check']]:subprocess.run([sys.executable,*command],cwd=d,env=env,check=True)
+            for command in [['-m','unittest','discover','-s','tests','-v'],['-m','scripts.verify_submission','--offline'],['-m','scripts.publication_audit','--check']]:subprocess.run([sys.executable,*command],cwd=d,env=env,check=True)
     print('PASS publication path and secret-pattern scan; heuristic checks do not guarantee absence of every secret')
 if __name__=='__main__':main()

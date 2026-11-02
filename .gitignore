@@ -61,3 +61,6 @@ credentials*.json
 /compare_development.py
 /development_diagnostics.py
 /rubric_development.py
+
+# Local submission preserved; verified download is on GitHub Releases.
+/submission/
