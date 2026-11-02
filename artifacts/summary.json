@@ -1,0 +1,78 @@
+{
+  "documents": 8,
+  "questions": 9,
+  "answerable": 8,
+  "k": 4,
+  "relevance_unit": "PDF page",
+  "recall_label": "Reference-evidence Recall@4, not exhaustive corpus recall",
+  "development_set_not_held_out": true,
+  "old_scores_reused": false,
+  "paired_completed": 9,
+  "correctness_exclusions": [],
+  "retrieval_exclusions": [
+    "B9"
+  ],
+  "retrieval": {
+    "macro_precision_at_4": 0.40625,
+    "macro_reference_evidence_recall_at_4": 1.0,
+    "direct_relevant": 13,
+    "precision_slots": 32,
+    "actually_returned_pages": 32,
+    "canonical_reference_pages_retrieved": 8,
+    "canonical_reference_pages": 8,
+    "sufficient": 8,
+    "sufficiency_denominator": 8
+  },
+  "mean_retrieval_seconds": 2.165222222222222,
+  "rag": {
+    "completed": 9,
+    "points": 12,
+    "possible_points": 18,
+    "fully_correct": 6,
+    "answerable_points": 10,
+    "answerable_possible_points": 16,
+    "answerable_fully_correct": 5,
+    "answerable_completed": 8,
+    "abstentions": [
+      "B1",
+      "B3",
+      "B9"
+    ],
+    "errors": [],
+    "mean_generation_seconds": 5.602222222222222
+  },
+  "baseline": {
+    "completed": 9,
+    "points": 2,
+    "possible_points": 18,
+    "fully_correct": 1,
+    "answerable_points": 0,
+    "answerable_possible_points": 16,
+    "answerable_fully_correct": 0,
+    "answerable_completed": 8,
+    "abstentions": [
+      "B1",
+      "B2",
+      "B3",
+      "B4",
+      "B6",
+      "B7",
+      "B8",
+      "B9"
+    ],
+    "errors": [],
+    "mean_generation_seconds": 5.255111111111111
+  },
+  "citations": {
+    "supported": 4,
+    "eligible_factual_rag_answers": 7,
+    "baseline": "N/A; no passages supplied",
+    "pure_abstentions": "excluded"
+  },
+  "abstention_case": {
+    "B9": {
+      "rag": 2,
+      "baseline": 2
+    }
+  }
+}

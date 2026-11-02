@@ -1,0 +1,150 @@
+{
+  "B1": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 1,
+    "precision_at_4": 0.25,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "01_bls_state_unemployment_annual_2024.pdf",
+        "pdf_page": 9
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B2": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 1,
+    "precision_at_4": 0.25,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "02_bls_state_employment_unemployment_dec2024.pdf",
+        "pdf_page": 11
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B3": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 2,
+    "precision_at_4": 0.5,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "03_bls_occupational_employment_wages_may2024.pdf",
+        "pdf_page": 1
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B4": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 4,
+    "precision_at_4": 1.0,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "04_bls_business_employment_dynamics_q42024.pdf",
+        "pdf_page": 1
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B5": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 1,
+    "precision_at_4": 0.25,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "05_bls_employment_projections_2024_2034.pdf",
+        "pdf_page": 1
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B6": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 1,
+    "precision_at_4": 0.25,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "06_bls_metro_employment_unemployment_dec2024.pdf",
+        "pdf_page": 1
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B7": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 1,
+    "precision_at_4": 0.25,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "07_bls_employment_situation_dec2024.pdf",
+        "pdf_page": 1
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B8": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 2,
+    "precision_at_4": 0.5,
+    "reference_evidence_recall_at_4": 1.0,
+    "gold_reference_pages": [
+      {
+        "filename": "08_bls_job_openings_turnover_dec2024.pdf",
+        "pdf_page": 1
+      }
+    ],
+    "gold_retrieved": 1,
+    "gold_denominator": 1,
+    "evidence_sufficient": 1
+  },
+  "B9": {
+    "k": 4,
+    "unit": "PDF page",
+    "returned": 4,
+    "direct_relevant": 0,
+    "precision_at_4": 0.0,
+    "reference_evidence_recall_at_4": null,
+    "gold_reference_pages": [],
+    "gold_retrieved": 0,
+    "gold_denominator": 0,
+    "evidence_sufficient": null
+  }
+}

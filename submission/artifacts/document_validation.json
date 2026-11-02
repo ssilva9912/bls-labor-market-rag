@@ -1,0 +1,10 @@
+{
+  "docx": "reflection.docx",
+  "pdf": "reflection.pdf",
+  "pdf_pages": 1,
+  "pdf_renderer": "Single-page PDF with standard Helvetica fonts; identical prose to DOCX",
+  "docx_structure": "Editable OOXML paragraphs, fixed Letter page size",
+  "native_word_render": "Blocked: COM logon session error 80070520",
+  "visual_verification": "PDF rendered using Windows.Data.Pdf, confirmed one page, and visually inspected: readable with no clipping. Native DOCX pagination remains unverified.",
+  "limitation": "One-page PDF structure is verified. DOCX is designed for one page but requires native rendering to confirm."
+}

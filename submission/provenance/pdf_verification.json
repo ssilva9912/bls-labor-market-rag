@@ -1,0 +1,98 @@
+[
+  {
+    "id": "D1",
+    "filename": "01_bls_state_unemployment_annual_2024.pdf",
+    "pdf_pages": 13,
+    "text_extracted_pages": 13,
+    "reference_pages": [
+      9
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D2",
+    "filename": "02_bls_state_employment_unemployment_dec2024.pdf",
+    "pdf_pages": 21,
+    "text_extracted_pages": 21,
+    "reference_pages": [
+      11
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D3",
+    "filename": "03_bls_occupational_employment_wages_may2024.pdf",
+    "pdf_pages": 23,
+    "text_extracted_pages": 23,
+    "reference_pages": [
+      1
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D4",
+    "filename": "04_bls_business_employment_dynamics_q42024.pdf",
+    "pdf_pages": 18,
+    "text_extracted_pages": 18,
+    "reference_pages": [
+      1
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D5",
+    "filename": "05_bls_employment_projections_2024_2034.pdf",
+    "pdf_pages": 9,
+    "text_extracted_pages": 9,
+    "reference_pages": [
+      1
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D6",
+    "filename": "06_bls_metro_employment_unemployment_dec2024.pdf",
+    "pdf_pages": 25,
+    "text_extracted_pages": 25,
+    "reference_pages": [
+      1
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D7",
+    "filename": "07_bls_employment_situation_dec2024.pdf",
+    "pdf_pages": 42,
+    "text_extracted_pages": 42,
+    "reference_pages": [
+      1
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  },
+  {
+    "id": "D8",
+    "filename": "08_bls_job_openings_turnover_dec2024.pdf",
+    "pdf_pages": 21,
+    "text_extracted_pages": 21,
+    "reference_pages": [
+      1
+    ],
+    "reference_numbers_also_found_in_official_html": true,
+    "visual_reference_check": "Supporting PDF pages visually checked, including Washington table headers/year columns, preliminary footnote, units, dates and narrative figures. Official PDF bytes unchanged.",
+    "limitations": "Not every graphical chart or rotated map is reconstructed as text; questions use verified extractable pages."
+  }
+]

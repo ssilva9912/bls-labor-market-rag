@@ -1,0 +1,5 @@
+# Offline regression tests use unittest from the Python standard library.
+# Minimal imports needed by the offline tests and artifact validators.
+pypdf>=5,<8
+python-dotenv>=1,<2
+rank-bm25>=0.2.2,<1

@@ -1,0 +1,48 @@
+{
+  "project": "BLS Labor Market RAG",
+  "repository": "https://github.com/ssilva9912/bls-labor-market-rag",
+  "requested_visibility": "PUBLIC",
+  "checks_performed": {
+    "frozen_sha256_files": 19,
+    "official_pdf_sha256": 8,
+    "official_html_sha256": 8,
+    "paired_cases": 9,
+    "completed_calls": 18,
+    "raw_judgment_hash_binding": "pass",
+    "same_model_and_settings": "pass",
+    "manual_score_aggregates_recomputed": "pass",
+    "retrieval_aggregates_recomputed": "pass",
+    "pdf_rendered_pages": 1,
+    "pdf_visual_review": "pass",
+    "docx_content_xml": "checked separately using .NET ZIP/XML; matches analysis_content.json"
+  },
+  "python_tests": {
+    "status": "not run in finishing session",
+    "reason": "Sandbox denies access to installed Python interpreter"
+  },
+  "live_integration": {
+    "status": "not run",
+    "ci_policy": "two opt-in live tests report skips by default"
+  },
+  "fresh_install": {
+    "status": "blocked",
+    "reason": "Existing interpreter inaccessible; isolated uv Python download failed with socket permission error 10013. Working environment untouched."
+  },
+  "pip_check": {
+    "status": "not run",
+    "reason": "Interpreter inaccessible"
+  },
+  "native_docx_pagination": {
+    "status": "unverified",
+    "reason": "Word COM logon session error 80070520; packaged Python renderer cannot execute"
+  },
+  "git_commit_push": {
+    "status": "blocked",
+    "reason": "Sandbox denies .git/config lock writes; CLI authentication is invalid and outbound socket access is restricted"
+  },
+  "github_actions": {
+    "status": "not run; repository not published by this session"
+  },
+  "remaining_command": ".\\finish_publish.ps1",
+  "directory_rename": "Deferred: active workspace and parent directory outside writable root. Perform only after all commands and this session stop."
+}
