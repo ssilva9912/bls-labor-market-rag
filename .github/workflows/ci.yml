@@ -36,7 +36,13 @@ jobs:
       - name: Validate published submission offline
         run: |
           python sources.py verify
-          python verify_submission.py --offline
-          python verify_submission.py --offline --package submission
+          python -m scripts.verify_submission --offline
+          python -m scripts.verify_submission --offline --package submission
       - name: Publication inventory and secret-pattern check
-        run: python publication_audit.py --check
+        run: python -m scripts.publication_audit --check
+      - name: Build and verify reproducible complete assignment ZIP
+        run: |
+          python -m scripts.package_submission
+          cp tmp/bls-labor-market-rag-submission.zip /tmp/first-submission.zip
+          python -m scripts.package_submission
+          cmp /tmp/first-submission.zip tmp/bls-labor-market-rag-submission.zip

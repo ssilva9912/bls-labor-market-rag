@@ -1,7 +1,7 @@
 """Audit intended/tracked publication paths; never print credential matches."""
 import argparse,json,re,subprocess,shutil,tempfile,os,sys
 from pathlib import Path
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[1]
 ROOT_FILES={'.gitignore','.gitattributes','.env.example','README.md','requirements.txt','requirements.lock.txt','requirements-docs.txt','requirements-test.txt',
  'rag_eval.py','model_worker.py','final_evaluation.py','sources.py','verify_references.py','score_final.py',
  'verify_submission.py','verify_ollama.py','report.py','package_submission.py','publication_audit.py',
@@ -20,6 +20,7 @@ def permitted(name):
             return inventory.exists() and p.name in {r['filename'] for r in json.loads(inventory.read_text())['documents']}
         return p.name=='reflection.pdf' and p.parent.name=='artifacts'
     if name in ROOT_FILES or name=='.github/workflows/ci.yml':return True
+    if p.parts[0] in {'scripts','evaluation'}:return p.suffix in {'.py','.ps1'}
     if p.parts[0]=='tests':return p.suffix=='.py'
     if p.parts[0]=='docs':
         if name=='docs/source_inventory.json':return True
@@ -94,6 +95,6 @@ def main():
             for name in paths:
                 target=Path(d)/name;target.parent.mkdir(parents=True,exist_ok=True);shutil.copy2(ROOT/name,target)
             env=dict(os.environ,HF_HUB_OFFLINE='1',TRANSFORMERS_OFFLINE='1',PYTHONDONTWRITEBYTECODE='1',RUN_LIVE_OLLAMA_TESTS='0',RUN_LIVE_RETRIEVAL_TESTS='0')
-            for command in [['-m','unittest','discover','-s','tests','-v'],['verify_submission.py','--offline'],['verify_submission.py','--offline','--package','submission'],['publication_audit.py','--check']]:subprocess.run([sys.executable,*command],cwd=d,env=env,check=True)
+            for command in [['-m','unittest','discover','-s','tests','-v'],['-m','scripts.verify_submission','--offline'],['-m','scripts.verify_submission','--offline','--package','submission'],['-m','scripts.publication_audit','--check']]:subprocess.run([sys.executable,*command],cwd=d,env=env,check=True)
     print('PASS publication path and secret-pattern scan; heuristic checks do not guarantee absence of every secret')
 if __name__=='__main__':main()

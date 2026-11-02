@@ -4,7 +4,7 @@ import argparse
 from pathlib import Path
 from xml.sax.saxutils import escape
 from zipfile import ZipFile,ZIP_DEFLATED
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts'
 
 def build():

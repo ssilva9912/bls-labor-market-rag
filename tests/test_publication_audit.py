@@ -3,8 +3,8 @@ import tempfile
 import zipfile
 from pathlib import Path
 from unittest.mock import patch
-import publication_audit as audit_module
-from publication_audit import permitted, PATTERNS
+import scripts.publication_audit as audit_module
+from scripts.publication_audit import permitted, PATTERNS
 
 class PublicationAuditTests(unittest.TestCase):
     def test_supported_text_encodings_are_strict(self):

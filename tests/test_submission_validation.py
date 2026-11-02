@@ -1,7 +1,7 @@
 import tempfile
 import unittest
 from pathlib import Path
-from verify_submission import check_hashes, safe_path, sha256, verify_package, ROOT
+from scripts.verify_submission import check_hashes, safe_path, sha256, verify_package, ROOT
 
 class SubmissionValidationTests(unittest.TestCase):
     def test_published_package_validates_offline(self):

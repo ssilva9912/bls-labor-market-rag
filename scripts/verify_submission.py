@@ -6,7 +6,7 @@ from pathlib import Path,PurePosixPath
 import subprocess
 import sys
 from pypdf import PdfReader
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[1]
 def sha256(path):return hashlib.sha256(path.read_bytes()).hexdigest()
 def safe_path(root,name):
     p=PurePosixPath(name)
@@ -43,7 +43,7 @@ def verify_package(root,require_assets=False):
     answerable=[r for r in refs if r['answerability']=='answerable']
     if len(answerable)!=8:raise ValueError('Eight answerable cases plus one abstention required')
     if {e['filename'] for r in answerable for e in r['evidence']}!=pdfs:raise ValueError('Each PDF must support a reference')
-    from verify_references import normalized
+    from scripts.verify_references import normalized
     for ref in answerable:
         for e in ref['evidence']:
             text=normalized(PdfReader(root/'docs'/e['filename']).pages[e['pdf_page']-1].extract_text())

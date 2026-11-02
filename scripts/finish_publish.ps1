@@ -2,16 +2,16 @@
 # No credentials are read, printed, or embedded by this script.
 param([switch]$ResumePublication)
 $ErrorActionPreference='Stop'
-Set-Location -LiteralPath $PSScriptRoot
+Set-Location -LiteralPath (Split-Path -Parent $PSScriptRoot)
 function Check-Exit([string]$step) { if ($LASTEXITCODE -ne 0) { throw "$step failed (exit $LASTEXITCODE)." } }
-$python=Join-Path $PSScriptRoot '.venv/Scripts/python.exe'
+$python=Join-Path (Get-Location) '.venv/Scripts/python.exe'
 if (-not (Test-Path -LiteralPath $python)) { throw 'Create the Python 3.12 environment using README.md first.' }
 & $python --version; Check-Exit 'Python access'
 if (-not $ResumePublication) {
 # Validate in isolation; never replace or uninstall from the working environment.
 try {
   & $python -m venv .venv-fresh; Check-Exit 'Create isolated fresh environment'
-  $fresh=Join-Path $PSScriptRoot '.venv-fresh/Scripts/python.exe'
+  $fresh=Join-Path (Get-Location) '.venv-fresh/Scripts/python.exe'
   & $fresh -m pip install -r requirements.txt -r requirements-docs.txt; Check-Exit 'Fresh dependency installation'
   & $fresh -m pip check; Check-Exit 'Fresh dependency compatibility'
   & $fresh -m unittest discover -s tests -v; Check-Exit 'Fresh-environment offline tests'
@@ -20,15 +20,15 @@ try {
 & $python -m pip check; Check-Exit 'Dependency compatibility'
 & $python -m unittest discover -s tests -v; Check-Exit 'Offline tests'
 & $python sources.py verify; Check-Exit 'Source verification'
-& $python verify_submission.py --offline; Check-Exit 'Project artifact verification'
-& $python verify_submission.py --offline --package submission; Check-Exit 'Submission verification'
+& $python -m scripts.verify_submission --offline; Check-Exit 'Project artifact verification'
+& $python -m scripts.verify_submission --offline --package submission; Check-Exit 'Submission verification'
 }
 # Always rerun focused coverage and publication scanning, including on resume.
 & $python -m unittest discover -s tests -p test_publication_audit.py -v; Check-Exit 'Audit regression tests'
 if ($ResumePublication) {
-  & $python verify_submission.py --offline --package submission; Check-Exit 'Updated submission verification'
+  & $python -m scripts.verify_submission --offline --package submission; Check-Exit 'Updated submission verification'
 }
-& $python publication_audit.py --check; Check-Exit 'Publication audit'
+& $python -m scripts.publication_audit --check; Check-Exit 'Publication audit'
 gh auth status
 if ($LASTEXITCODE -ne 0) { gh auth login --hostname github.com --web; Check-Exit 'Secure GitHub login' }
 $login=gh api user --jq .login; Check-Exit 'GitHub identity'
@@ -52,10 +52,18 @@ if ($LASTEXITCODE -eq 0) {
 if ($remotes.Count -eq 0) { git remote add origin https://github.com/ssilva9912/bls-labor-market-rag.git; Check-Exit 'Set approved origin' }
 $files=(Get-Content publication_files.json -Raw | ConvertFrom-Json).files
 foreach ($file in $files) { git -c core.autocrlf=false add -- $file; Check-Exit "Stage $file" }
-& $python publication_audit.py --check; Check-Exit 'Audit staged/tracked files'
+$moved=@('score_final.py','report.py','verify_submission.py','verify_references.py','verify_ollama.py','publication_audit.py','package_submission.py','finish_publish.ps1')
+$removed=@(git diff --name-only --diff-filter=D); Check-Exit 'Inspect removed paths'
+foreach ($file in $removed) {
+  if ($file -notin $moved) { throw "Unexpected removal: $file" }
+  $group=if ($file -in @('score_final.py','report.py')) { 'evaluation' } else { 'scripts' }
+  if (-not (Test-Path -LiteralPath "$group/$file")) { throw "Missing move destination: $file" }
+  git add -u -- $file; Check-Exit "Stage move removal $file"
+}
+& $python -m scripts.publication_audit --check; Check-Exit 'Audit staged/tracked files'
 git diff --cached --stat; Check-Exit 'Review staged summary'
 $staged=@(git diff --cached --name-only); Check-Exit 'Inspect staged names'
-foreach ($file in $staged) { if ($file -notin $files) { throw "Unexpected staged file: $file" } }
+foreach ($file in $staged) { if ($file -notin $files -and $file -notin $moved) { throw "Unexpected staged file: $file" } }
 if ($staged.Count -gt 0) { git commit -m 'Publish BLS Labor Market RAG evaluation and offline CI'; Check-Exit 'Commit' }
 git push --set-upstream origin main; Check-Exit 'Push main without force'
 $commit=git rev-parse HEAD; Check-Exit 'Final commit'

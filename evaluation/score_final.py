@@ -4,7 +4,7 @@ import hashlib
 import json
 from pathlib import Path
 from statistics import mean
-ROOT=Path(__file__).resolve().parent
+ROOT=Path(__file__).resolve().parents[1]
 OUT=ROOT/'artifacts'
 K=4
 

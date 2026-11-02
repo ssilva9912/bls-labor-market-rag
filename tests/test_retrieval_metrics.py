@@ -1,5 +1,5 @@
 import unittest
-from score_final import retrieval_metrics
+from evaluation.score_final import retrieval_metrics
 class RetrievalMetricTests(unittest.TestCase):
     def test_page_precision_and_nonexhaustive_reference_recall_are_distinct(self):
         row={'retrieved_chunks':[{'source':'a.pdf','page':2},{'source':'a.pdf','page':3}]}

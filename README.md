@@ -51,12 +51,36 @@ startup and is not end-to-end RAG latency. No final correctness case was exclude
 docs/          Eight saved official PDFs and source_inventory.json
 provenance/    Official HTML cross-checks, reuse terms, cleanup and question history
 artifacts/     Fresh answers, judgments, metrics, references and reflection
+evaluation/    Manual scoring and report generation (module commands)
+scripts/       Validation, deterministic ZIP packaging and publication helpers
 tests/         Offline regression tests; live inference explicitly opt-in
 index/         Local Chroma index and chunks, excluded from Git and submission
 submission/    Standalone reviewed assignment package, without indexes or secrets
 ```
 
-Active commands are the root Python scripts below. Temporary QA files remain
+`rag_eval.py` is the CLI. The frozen runtime files `rag_eval.py`,
+`model_worker.py`, `final_evaluation.py`, and `sources.py` remain at root:
+their exact bytes are bound into the frozen evaluation. The rubric also stays
+at its frozen path. Moving these would require changing historical hash checks.
+Run helpers from the repository root with `python -m scripts.<name>` and
+scoring/report tools with `python -m evaluation.<name>`.
+
+```mermaid
+flowchart LR
+  PDFs[docs: eight PDFs] --> Load[PyPDFLoader]
+  Load --> Split[RecursiveCharacterTextSplitter]
+  Split --> Embed[Local MiniLM embeddings]
+  Embed --> Dense[Chroma dense retrieval]
+  Load --> Sparse[Page BM25]
+  Dense --> RRF[RRF: four PDF pages]
+  Sparse --> RRF
+  RRF --> Worker[model_worker: Ollama llama3.1:8b]
+  Worker --> Answers[Answers with page citations]
+```
+
+Loading, chunking, embedding, retrieval and fusion live in `rag_eval.py`;
+`model_worker.py` executes generation in a bounded subprocess.
+Temporary QA files remain
 ignored under `tmp/`; protected old credential helpers remain ignored in
 `archive/`. Neither directory is part of the submission. Publication target: public repository `ssilva9912/bls-labor-market-rag`.
 
@@ -94,9 +118,9 @@ py -3.12 -m venv .venv
 .\.venv\Scripts\python.exe -m pip check
 .\.venv\Scripts\python.exe sources.py verify
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
-.\.venv\Scripts\python.exe verify_submission.py --offline
-.\.venv\Scripts\python.exe verify_submission.py --offline --package submission
-.\.venv\Scripts\python.exe publication_audit.py --check
+.\.venv\Scripts\python.exe -m scripts.verify_submission --offline
+.\.venv\Scripts\python.exe -m scripts.verify_submission --offline --package submission
+.\.venv\Scripts\python.exe -m scripts.publication_audit --check
 ```
 
 Offline checks need neither credentials, an Ollama server, nor model downloads.
@@ -152,7 +176,7 @@ Hardware, runtime and model revisions can change outputs despite a fixed seed.
 
 Local opt-in checks use `RUN_LIVE_OLLAMA_TESTS=1` and `RUN_LIVE_RETRIEVAL_TESTS=1`.
 Run `python -m unittest discover -s tests -v`; they use installed models only and
-do not repeat the frozen final evaluation. `python score_final.py` recomputes scores from the existing hash-bound manual judgments, without model calls. Install `requirements-docs.txt` before running `python report.py` and `python report.py --pdf-only` to regenerate the
+do not repeat the frozen final evaluation. `python -m evaluation.score_final` recomputes scores from the existing hash-bound manual judgments, without model calls. Install `requirements-docs.txt` before running `python -m evaluation.report` and `python -m evaluation.report --pdf-only` to regenerate the
 editable reflection from current scored results. Native Word automation was blocked by the current session;
 the DOCX XML structure was validated and the final PDF was typeset from the same analysis prose and rendered with Windows.Data.Pdf for visual review. Native Word pagination remains
 unverified and may vary. Open the DOCX to edit it; edits may
@@ -164,7 +188,7 @@ change pagination and should not be represented as the original evaluation.
 permissions, installs minimal test dependencies, runs offline tests and both package validators,
 and audits publication paths/secret patterns. It has no credentials, Ollama service
 or model download step. Dependency installation needs package-repository access.
-GitHub runner resolution and event execution remain unverified until publication.
+GitHub Actions is checked against the exact pushed commit during publication.
 See [publication review](PUBLICATION_REVIEW.md) and the exact file inventory in
 `publication_files.json`. The secret-pattern scan is a heuristic, not a guarantee.
 External credentials, environments, caches and indexes remain excluded.
@@ -173,13 +197,31 @@ External credentials, environments, caches and indexes remain excluded.
 
 The standalone submission is `submission/`. The analysis is titled **Evaluating Retrieval-Augmented Generation on BLS Labor Market Reports** and is supplied as `submission/artifacts/reflection.docx` and `submission/artifacts/reflection.pdf`. Comparison and source/reference tables, raw JSONL, CSV results, judgments, and manifests are in its `artifacts/` directory.
 
-This finishing session could not execute Python because sandbox access to the existing interpreter was denied. A fresh Python download failed with socket permission error 10013; the existing environment was preserved. Fresh installation, pip check, Python tests, live smoke checks, and native DOCX pagination remain unverified in this session. `artifacts/completion_validation.json` records checks actually performed. CI status must be read from GitHub after publication; a local check is not a GitHub Actions result.
+The current analysis is [reflection.pdf](artifacts/reflection.pdf), with the
+[comparison table](artifacts/comparison.md) and [eight source PDFs](docs/).
+[GitHub releases](https://github.com/ssilva9912/bls-labor-market-rag/releases)
+is the intended download location; no submission ZIP upload is verified yet.
+The existing tracked `submission/` is preserved unchanged until a complete ZIP
+has been verified and uploaded successfully. Its older standalone commands
+remain valid within that historical package.
+
+Build the current complete assignment without touching the local submission:
+`python -m scripts.package_submission`. It writes
+`tmp/bls-labor-market-rag-submission.zip`, uses sorted entries and fixed metadata,
+and verifies PDF provenance, frozen bindings and every archived checksum.
+Attach that ZIP to a GitHub release before using `git rm -r --cached submission`
+and adding `/submission/` to `.gitignore`. Never delete the local directory.
+Captured HTML is required reference data: the unchanged source inventory binds
+each snapshot's path and hash, and source validation checks those bytes.
+Only those HTML snapshots are marked linguist-vendored; application code remains visible.
+
+The cleanup finishing session verified Python 3.12.10, Git remote access, GitHub authentication, dependency compatibility, all 34 offline tests (two expected live skips), source and frozen artifact validation, and the cached local hybrid retrieval smoke check. The local Ollama service was started and live freeze validation passed. Frozen results and scores were preserved. Native Word pagination remains unverified.
 
 For a separate fresh-install check: `py -3.12 -m venv .venv-fresh`, then run `.\.venv-fresh\Scripts\python.exe -m pip install -r requirements.txt -r requirements-docs.txt`, `-m pip check`, and `-m unittest discover -s tests -v` with that interpreter. After caching the models explicitly, use the documented ingest and ask commands for a live smoke check.
 
-From the project root in the owner's normal PowerShell session, run `./finish_publish.ps1` to attempt isolated fresh-install validation, run the required offline checks, authenticate securely if needed, publish the reviewed files to the authorized public repository, and wait for its actual Actions result. It stops on unexpected repository content, validation failures, or push errors and never force-pushes. Native Word pagination still needs a separate check before submission.
+From the project root in the owner's normal PowerShell session, run `./scripts/finish_publish.ps1` to attempt isolated fresh-install validation, run the required offline checks, authenticate securely if needed, publish the reviewed files to the authorized public repository, and wait for its actual Actions result. It stops on unexpected repository content, validation failures, or push errors and never force-pushes. Native Word pagination still needs a separate check before submission.
 
 When fresh installation, pip check, offline validation, and the existing tests have
-already passed, run `./finish_publish.ps1 -ResumePublication`. This reruns the
+already passed, run `./scripts/finish_publish.ps1 -ResumePublication`. This reruns the
 focused audit tests, verifies the updated submission, and audits publication
 files before continuing to commit, push, and verify the matching Actions run.

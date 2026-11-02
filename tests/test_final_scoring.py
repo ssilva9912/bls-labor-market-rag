@@ -1,7 +1,7 @@
 import copy
 import json
 import unittest
-from score_final import OUT, validate
+from evaluation.score_final import OUT, validate
 
 class FinalScoringTests(unittest.TestCase):
     def setUp(self):
