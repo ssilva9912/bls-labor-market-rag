@@ -65,9 +65,19 @@ uv run bls-rag experiment run    experiments/02_finetune
 
 # 5. Score manually against the PDFs using ../01_rag_eval/scoring_rubric.md
 uv run python -m bls_rag.evaluation.finetune_scoring template
-#    fill artifacts/judgments.json, then:
+uv run python -m bls_rag.evaluation.judge_ui      # grading page; fills artifacts/judgments.json as you go
 uv run python -m bls_rag.evaluation.finetune_scoring summary
 ```
+
+The grading page (http://127.0.0.1:8010) shows one question at a time: the
+reference answer, required criteria and evidence on the left, the four answers
+on the right. Arms are hidden and shuffled by default so grading is blind.
+It is keyboard-driven (`2`/`1`/`0` score, `A` abstained, `Y`/`N` citations,
+`Enter` next ungraded) and saves every change. As an aid, it colours each
+figure in an answer by whether it appears in the reference, and lists which
+of the given pages actually shows it next to the pages the answer cited. The
+judgment itself stays manual. `--judgments copy.json` grades a separate copy
+(for a second grader).
 
 `summary` also reports automatic format compliance per arm (has `[S#]`,
 citations in range, `Sources:` line, exact abstention sentence), plus mean

@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Experiment 02 grading</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --panel: #ffffff; --text: #1b1f24; --muted: #5d6673; --line: #dfe3e8;
+    --accent: #1f5fbf; --accent-text: #ffffff; --chip: #e6eefb; --chip-text: #1a4a96;
+    --good-bg: #dcf3e3; --good-text: #14592b; --warn-bg: #fff0c2; --warn-text: #6b4e00;
+    --bad-bg: #fde0dc; --bad-text: #8a1f14; --excerpt: #f3f5f7; --mark: #ffe58a;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #14171b; --panel: #1d2127; --text: #e8eaed; --muted: #9aa3ae; --line: #30363d;
+      --accent: #6ea4f4; --accent-text: #0e1420; --chip: #25344d; --chip-text: #a9c8fa;
+      --good-bg: #173a24; --good-text: #9be0b0; --warn-bg: #3b3115; --warn-text: #f2d98a;
+      --bad-bg: #442019; --bad-text: #f5b5ac; --excerpt: #171a1f; --mark: #6b5a12;
+    }
+  }
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0; background: var(--bg); color: var(--text); display: flex; flex-direction: column;
+    font: 15px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  }
+  button, input { font: inherit; color: inherit; }
+  button { cursor: pointer; }
+  button:focus-visible, input:focus-visible, summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  header { background: var(--panel); border-bottom: 1px solid var(--line); padding: 10px 16px; }
+  .bar { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; }
+  h1 { font-size: 1.05rem; margin: 0; }
+  .pills { display: flex; flex-wrap: wrap; gap: 4px; }
+  .pill {
+    border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 2px 9px;
+    font-size: .85rem; font-variant-numeric: tabular-nums;
+  }
+  .pill.some { background: var(--warn-bg); color: var(--warn-text); border-color: transparent; }
+  .pill.done { background: var(--good-bg); color: var(--good-text); border-color: transparent; }
+  .pill.current { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .progress { font-size: .9rem; font-variant-numeric: tabular-nums; }
+  .spacer { flex: 1; }
+  .ghost { border: 1px solid var(--line); background: var(--bg); border-radius: 6px; padding: 4px 10px; font-size: .88rem; }
+  .primary { border: 0; background: var(--accent); color: var(--accent-text); border-radius: 6px; padding: 5px 12px; font-weight: 600; font-size: .88rem; }
+  .primary:disabled { opacity: .45; cursor: default; }
+  .blind { font-size: .88rem; display: flex; align-items: center; gap: 5px; color: var(--muted); }
+  .save { font-size: .82rem; color: var(--muted); min-width: 5.5em; text-align: right; }
+  .save.error { color: var(--bad-text); }
+  .keys { color: var(--muted); font-size: .78rem; margin: 6px 0 0; }
+  kbd {
+    font: .78rem ui-monospace, Consolas, monospace; border: 1px solid var(--line); border-bottom-width: 2px;
+    border-radius: 4px; padding: 0 4px; background: var(--bg);
+  }
+  main { flex: 1; min-height: 0; display: grid; grid-template-columns: minmax(300px, 40%) 1fr; }
+  .col { overflow-y: auto; padding: 14px 16px 40px; min-width: 0; }
+  .col + .col { border-left: 1px solid var(--line); }
+  @media (max-width: 900px) {
+    body { display: block; }
+    main { display: block; }
+    .col { overflow: visible; }
+    .col + .col { border-left: 0; border-top: 1px solid var(--line); }
+  }
+  h2 { font-size: 1rem; margin: 0 0 4px; overflow-wrap: anywhere; }
+  h3 { font-size: .76rem; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin: 16px 0 5px; }
+  .tag { display: inline-block; border-radius: 5px; padding: 0 7px; font-size: .78rem; font-weight: 600; }
+  .tag.good { background: var(--good-bg); color: var(--good-text); }
+  .tag.warn { background: var(--warn-bg); color: var(--warn-text); }
+  .tag.bad { background: var(--bad-bg); color: var(--bad-text); }
+  .reference { background: var(--good-bg); color: var(--good-text); border-radius: 8px; padding: 8px 12px; margin: 0; font-weight: 600; }
+  ul.criteria { margin: 0; padding-left: 20px; }
+  .evidence, .passage-text {
+    background: var(--excerpt); border-radius: 6px; padding: 8px 10px; margin: 4px 0;
+    white-space: pre-wrap; overflow-wrap: anywhere; font: .8rem/1.45 ui-monospace, Consolas, monospace;
+  }
+  .passage-text { max-height: 340px; overflow: auto; }
+  details { margin: 2px 0; }
+  details.flash > summary { background: var(--chip); }
+  summary { cursor: pointer; padding: 3px 4px; border-radius: 5px; overflow-wrap: anywhere; font-size: .9rem; }
+  a { color: var(--accent); }
+  mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1px; }
+  .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0 0 14px; }
+  .card.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+  .card-head { display: flex; align-items: center; gap: 8px; margin: 0 0 8px; }
+  .card-head strong { font-size: .95rem; }
+  .card-head .model { color: var(--muted); font-size: .82rem; }
+  .answer { white-space: pre-wrap; overflow-wrap: anywhere; margin: 0; }
+  .num { border-radius: 3px; padding: 0 2px; font-weight: 600; }
+  .num.ref { background: var(--good-bg); color: var(--good-text); }
+  .num.seen { background: var(--warn-bg); color: var(--warn-text); }
+  .num.unseen { background: var(--bad-bg); color: var(--bad-text); }
+  .cite {
+    background: var(--chip); color: var(--chip-text); border: 0; border-radius: 5px; padding: 0 6px;
+    margin: 0 1px; font-size: .82em; font-weight: 600;
+  }
+  .checks { margin: 10px 0 0; padding: 8px 10px; background: var(--excerpt); border-radius: 6px; font-size: .84rem; }
+  .checks p { margin: 0 0 3px; color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; }
+  .checks div { font-variant-numeric: tabular-nums; }
+  .grade { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 16px; margin: 12px 0 0; padding-top: 10px; border-top: 1px solid var(--line); }
+  .group { display: flex; align-items: center; gap: 6px; }
+  .group > span { font-size: .8rem; color: var(--muted); }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .seg button { border: 0; border-right: 1px solid var(--line); background: var(--bg); padding: 3px 10px; font-size: .86rem; }
+  .seg button:last-child { border-right: 0; }
+  .seg button[aria-pressed="true"] { background: var(--accent); color: var(--accent-text); font-weight: 600; }
+  .reason { display: flex; flex-direction: column; gap: 5px; margin: 10px 0 0; }
+  .reason input { width: 100%; padding: 6px 9px; border: 1px solid var(--line); border-radius: 6px; background: var(--bg); }
+  .suggest { display: flex; flex-wrap: wrap; gap: 5px; }
+  .suggest button {
+    border: 1px dashed var(--line); background: transparent; border-radius: 5px; padding: 1px 7px;
+    font-size: .78rem; color: var(--muted); text-align: left;
+  }
+  .suggest button:hover { border-style: solid; color: var(--text); }
+  .notice { background: var(--bad-bg); color: var(--bad-text); border-radius: 8px; padding: 10px 14px; margin: 14px 16px; }
+  dialog { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); max-width: min(960px, 94vw); padding: 18px 20px; }
+  dialog::backdrop { background: rgba(0, 0, 0, .45); }
+  .table-wrap { overflow-x: auto; }
+  table { border-collapse: collapse; font-size: .9rem; font-variant-numeric: tabular-nums; }
+  th, td { text-align: left; padding: 5px 12px 5px 0; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th { color: var(--muted); font-weight: 600; font-size: .8rem; }
+</style>
+</head>
+<body>
+<header>
+  <div class="bar">
+    <h1>Experiment 02 grading</h1>
+    <div class="pills" id="pills"></div>
+    <span class="progress" id="progress"></span>
+    <span class="spacer"></span>
+    <label class="blind"><input type="checkbox" id="blind" checked> Hide which model wrote each answer</label>
+    <button class="ghost" id="next" type="button">Next ungraded</button>
+    <button class="primary" id="summary" type="button" disabled>Compute summary</button>
+    <span class="save" id="save" role="status"></span>
+  </div>
+  <p class="keys">
+    <kbd>2</kbd> correct <kbd>1</kbd> partial <kbd>0</kbd> wrong · <kbd>A</kbd> abstained ·
+    citations <kbd>Y</kbd> supported <kbd>N</kbd> not · <kbd>R</kbd> reason ·
+    <kbd>↑</kbd><kbd>↓</kbd> answer · <kbd>←</kbd><kbd>→</kbd> question · <kbd>Enter</kbd> next ungraded
+  </p>
+</header>
+<div id="problem"></div>
+<main>
+  <section class="col" id="left" aria-label="Question and reference"></section>
+  <section class="col" id="right" aria-label="Answers to grade"></section>
+</main>
+<dialog id="dialog">
+  <h2>Summary</h2>
+  <div id="dialog-body"></div>
+  <p><button class="ghost" type="button" id="dialog-close">Close</button></p>
+</dialog>
+
+<script>
+const $ = id => document.getElementById(id);
+const el = (tag, className, text) => {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+};
+const TOKENS = /(\[S\d+\])|(\$?(?:\d{1,3}(?:,\d{3})+|\d+)(?:\.\d+)?)/g;
+const AUTO_REASONS = {
+  correct: 'All required facts and qualifications present.',
+  abstainedRight: 'Explicit abstention without inventing a rate.',
+  abstainedWrong: 'Abstained on an answerable question.',
+};
+const GENERIC_REASONS = ['Wrong or invented figures', 'Contradicts itself', 'Unsupported extra claims', 'Cites a page that does not show the figure'];
+
+let data = null;
+let caseIndex = 0;
+let answerIndex = 0;
+let saveTimer = null;
+
+// ---- helpers ---------------------------------------------------------------
+const normalise = token => token.replace(/[$,]/g, '');
+const ignorable = n => /^\d$/.test(n) || /^(19|20)\d\d$/.test(n);  // list numbers and years say nothing
+function numbers(text) {
+  const found = new Set();
+  for (const match of (text || '').matchAll(TOKENS)) {
+    if (match[2] && !ignorable(normalise(match[2]))) found.add(normalise(match[2]));
+  }
+  return found;
+}
+function seededOrder(names, seed) {  // stable shuffle so a reload keeps the same blind order
+  let state = 2166136261;
+  for (const ch of seed) state = Math.imul(state ^ ch.charCodeAt(0), 16777619);
+  const random = () => { state = Math.imul(state ^ (state >>> 15), 2246822507) + 0x9e3779b9 | 0; return (state >>> 0) / 4294967296; };
+  const order = [...names];
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order;
+}
+const blind = () => $('blind').checked;
+const current = () => data.cases[caseIndex];
+const armOrder = c => blind() ? seededOrder(Object.keys(c.answers), 'grading-' + c.id) : Object.keys(c.answers);
+const judgment = (c, arm) => data.judgments[c.id][arm];
+function missing(c, arm) {
+  if (c.answers[arm].error) return [];
+  const j = judgment(c, arm), need = [];
+  if (![0, 1, 2].includes(j.correctness)) need.push('score');
+  if (typeof j.abstention !== 'boolean') need.push('answered or abstained');
+  if (data.arms[arm].retrieval && j.abstention === false && ![0, 1].includes(j.citation_support)) need.push('citations');
+  if (!(j.reason || '').trim()) need.push('reason');
+  return need;
+}
+function bodyAndSources(answer) {  // figures are only checked above the final Sources line
+  const match = answer.match(/^[ \t]*\(?\**sources?\b/im);
+  return match ? [answer.slice(0, match.index), answer.slice(match.index)] : [answer, ''];
+}
+
+// ---- saving ----------------------------------------------------------------
+function setSaveState(text, isError) {
+  $('save').textContent = text;
+  $('save').className = 'save' + (isError ? ' error' : '');
+}
+let saving = Promise.resolve();
+function save(c, arm) {
+  // One request at a time, each sending the latest state, so quick keypresses cannot land out of order.
+  setSaveState('Saving…');
+  saving = saving.then(async () => {
+    try {
+      const response = await fetch('/api/judgment', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({id: c.id, arm, ...judgment(c, arm)}),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error);
+      setSaveState('Saved');
+    } catch (error) {
+      setSaveState('Not saved: ' + (error.message || 'server stopped'), true);
+    }
+  });
+  return saving;
+}
+function update(c, arm, patch) {
+  Object.assign(judgment(c, arm), patch);
+  save(c, arm);
+  renderHeader();
+  renderAnswers();
+}
+function setScore(c, arm, value) {
+  const j = judgment(c, arm), patch = {correctness: value};
+  const automatic = Object.values(AUTO_REASONS).includes(j.reason);
+  if (typeof j.abstention !== 'boolean') patch.abstention = !c.answerable && value === 2;
+  if (value === 2 && (!j.reason || automatic)) patch.reason = c.answerable ? AUTO_REASONS.correct : AUTO_REASONS.abstainedRight;
+  if (value !== 2 && automatic) patch.reason = '';
+  update(c, arm, patch);
+}
+function setAbstained(c, arm) {
+  const j = judgment(c, arm), automatic = !j.reason || Object.values(AUTO_REASONS).includes(j.reason);
+  const patch = {abstention: true, correctness: c.answerable ? 0 : 2};
+  if (automatic) patch.reason = c.answerable ? AUTO_REASONS.abstainedWrong : AUTO_REASONS.abstainedRight;
+  if (data.arms[arm].retrieval && c.answers[arm].exact_abstention) patch.citation_support = null;
+  update(c, arm, patch);
+}
+
+// ---- rendering -------------------------------------------------------------
+function renderHeader() {
+  const pills = $('pills');
+  pills.textContent = '';
+  data.cases.forEach((c, i) => {
+    const arms = Object.keys(c.answers);
+    const done = arms.filter(arm => !missing(c, arm).length).length;
+    const state = done === arms.length ? 'done' : done || arms.some(arm => judgment(c, arm).correctness !== null) ? 'some' : '';
+    const pill = el('button', `pill ${state}${i === caseIndex ? ' current' : ''}`, c.id);
+    pill.type = 'button';
+    pill.title = `${done} of ${arms.length} graded`;
+    pill.addEventListener('click', () => { caseIndex = i; answerIndex = 0; renderCase(); });
+    pills.append(pill);
+  });
+  const gradable = data.cases.flatMap(c => Object.keys(c.answers).filter(arm => !c.answers[arm].error).map(arm => [c, arm]));
+  const graded = gradable.filter(([c, arm]) => !missing(c, arm).length).length;
+  $('progress').textContent = `${graded} of ${gradable.length} graded`;
+  $('summary').disabled = graded < gradable.length;
+}
+
+function pdfLink(source, page) {
+  const link = el('a', '', 'Open PDF');
+  link.href = `/pdf/${encodeURIComponent(source)}#page=${page}`;
+  link.target = '_blank';
+  link.rel = 'noopener';
+  return link;
+}
+
+function renderPassageText(target, content, highlight) {
+  target.textContent = '';
+  let last = 0;
+  for (const match of content.matchAll(TOKENS)) {
+    if (!match[2] || !highlight.has(normalise(match[2]))) continue;
+    target.append(content.slice(last, match.index), el('mark', '', match[0]));
+    last = match.index + match[0].length;
+  }
+  target.append(content.slice(last));
+}
+
+function renderLeft() {
+  const c = current(), left = $('left');
+  left.textContent = '';
+  left.append(el('h2', '', `${c.id} · ${c.question}`));
+  left.append(el('span', 'tag ' + (c.answerable ? 'good' : 'warn'),
+    c.answerable ? 'Answerable from the documents' : 'Not answerable: the right answer is to abstain'));
+  left.append(el('h3', '', 'Reference answer'), el('p', 'reference', c.reference_answer));
+  left.append(el('h3', '', 'Required for full marks'));
+  const criteria = el('ul', 'criteria');
+  for (const item of c.required_criteria) criteria.append(el('li', '', item));
+  left.append(criteria);
+  if (c.evidence.length) left.append(el('h3', '', 'Where the answer is'));
+  for (const e of c.evidence) {
+    const line = el('div', '', `${e.filename}, page ${e.pdf_page} `);
+    line.append(pdfLink(e.filename, e.pdf_page));
+    left.append(line, el('div', 'evidence', e.supporting_excerpt));
+  }
+  left.append(el('h3', '', 'Pages the models were given'));
+  for (const p of c.passages) {
+    const item = el('details');
+    item.id = 'passage-' + p.rank;
+    const summary = el('summary', '', `S${p.rank} · ${p.source}, page ${p.page} `);
+    if (p.reference) summary.append(el('span', 'tag good', 'reference page'), ' ');
+    summary.append(pdfLink(p.source, p.page));
+    item.append(summary, el('div', 'passage-text'));
+    left.append(item);
+  }
+  highlightPassages();
+}
+
+function highlightPassages() {  // mark the active answer's figures inside each passage
+  const c = current(), arm = armOrder(c)[answerIndex];
+  const figures = numbers(bodyAndSources(c.answers[arm].answer || '')[0]);
+  for (const p of c.passages) {
+    renderPassageText(document.querySelector(`#passage-${p.rank} .passage-text`), p.content, figures);
+  }
+}
+
+function showPassage(rank) {
+  const item = $('passage-' + rank);
+  if (!item) return;
+  item.open = true;
+  const first = item.querySelector('mark');
+  (first || item).scrollIntoView({behavior: 'smooth', block: first ? 'center' : 'nearest'});
+  item.classList.add('flash');
+  setTimeout(() => item.classList.remove('flash'), 1200);
+}
+
+function renderAnswerText(target, c, arm) {
+  const retrieval = data.arms[arm].retrieval;
+  const [body, sources] = bodyAndSources(c.answers[arm].answer);
+  const reference = numbers([c.reference_answer, ...c.required_criteria, ...c.evidence.map(e => e.supporting_excerpt)].join(' '));
+  const inPassages = new Set(c.passages.flatMap(p => [...numbers(p.content)]));
+  const appendPart = (text, checkNumbers) => {
+    let last = 0;
+    for (const match of text.matchAll(TOKENS)) {
+      let node = null;
+      if (match[1]) {
+        const rank = match[1].slice(2, -1), passage = c.passages.find(p => String(p.rank) === rank);
+        if (retrieval && passage) {
+          node = el('button', 'cite', 'S' + rank);
+          node.type = 'button';
+          node.title = `${passage.source}, page ${passage.page}${passage.reference ? ' (reference page)' : ''}`;
+          node.addEventListener('click', event => { event.stopPropagation(); activate(arm); showPassage(rank); });
+        }
+      } else if (checkNumbers && !ignorable(normalise(match[2]))) {
+        const n = normalise(match[2]);
+        const kind = reference.has(n) ? 'ref' : retrieval && inPassages.has(n) ? 'seen' : 'unseen';
+        node = el('span', 'num ' + kind, match[2]);
+        node.title = {ref: 'Appears in the reference answer or evidence',
+                      seen: 'Not in the reference, but appears in a page the model was given',
+                      unseen: retrieval ? 'Not in the reference or in any page the model was given' : 'Not in the reference'}[kind];
+      }
+      if (!node) continue;
+      target.append(text.slice(last, match.index), node);
+      last = match.index + match[0].length;
+    }
+    target.append(text.slice(last));
+  };
+  appendPart(body, true);
+  appendPart(sources, false);
+}
+
+function figureChecks(c, arm) {  // which given page actually shows each figure, versus the pages cited
+  const answer = c.answers[arm].answer;
+  const figures = [...numbers(bodyAndSources(answer)[0])];
+  if (!figures.length) return null;
+  const cited = new Set([...answer.matchAll(/\[S(\d+)\]/g)].map(m => Number(m[1])));
+  const box = el('div', 'checks');
+  box.append(el('p', '', 'Figure check (an aid, not a judgment)'));
+  const label = p => `S${p.rank}${p.reference ? ' (reference page)' : ''}`;
+  for (const figure of figures) {
+    const holders = c.passages.filter(p => numbers(p.content).has(figure));
+    const citedHolders = holders.filter(p => cited.has(p.rank));
+    const row = el('div');
+    if (citedHolders.length) row.append(el('span', 'tag good', 'cited'), ` ${figure} is on ${citedHolders.map(label).join(', ')}`);
+    else if (holders.length) row.append(el('span', 'tag warn', 'check'), ` ${figure} is not on a cited page; it is on ${holders.map(label).join(', ')}`);
+    else row.append(el('span', 'tag bad', 'missing'), ` ${figure} is not on any page the model was given`);
+    box.append(row);
+  }
+  return box;
+}
+
+function segment(label, options, value, onPick) {
+  const group = el('div', 'group');
+  group.append(el('span', '', label));
+  const seg = el('div', 'seg');
+  seg.setAttribute('role', 'group');
+  seg.setAttribute('aria-label', label);
+  for (const [text, optionValue] of options) {
+    const button = el('button', '', text);
+    button.type = 'button';
+    button.setAttribute('aria-pressed', String(value === optionValue));
+    button.addEventListener('click', event => { event.stopPropagation(); onPick(optionValue); });
+    seg.append(button);
+  }
+  group.append(seg);
+  return group;
+}
+
+function activate(arm) {
+  const index = armOrder(current()).indexOf(arm);
+  if (index === answerIndex) return;
+  answerIndex = index;
+  document.querySelectorAll('.card').forEach((card, i) => card.classList.toggle('active', i === answerIndex));
+  highlightPassages();
+}
+
+function renderAnswers() {
+  const c = current(), right = $('right');
+  const focusedReason = document.activeElement && document.activeElement.dataset.arm;
+  right.textContent = '';
+  armOrder(c).forEach((arm, i) => {
+    const out = c.answers[arm], j = judgment(c, arm), retrieval = data.arms[arm].retrieval;
+    const card = el('div', 'card' + (i === answerIndex ? ' active' : ''));
+    card.addEventListener('click', () => activate(arm));
+    const head = el('div', 'card-head');
+    head.append(el('strong', '', blind() ? `Answer ${'ABCD'[i] || i + 1}` : arm));
+    if (!blind()) head.append(el('span', 'model', data.arms[arm].model));
+    head.append(el('span', 'tag ' + (retrieval ? 'good' : 'warn'), retrieval ? 'given the pages' : 'closed book'));
+    const status = el('span');
+    const showStatus = () => {
+      const need = missing(c, arm);
+      status.className = 'tag ' + (need.length ? 'warn' : 'good');
+      status.textContent = need.length ? 'needs ' + need.join(', ') : 'graded';
+    };
+    showStatus();
+    head.append(el('span', 'spacer'), status);
+    card.append(head);
+    if (out.error) {
+      card.append(el('p', 'answer', `The model call failed (${out.error.category}); nothing to grade.`));
+      right.append(card);
+      return;
+    }
+    const answer = el('p', 'answer');
+    renderAnswerText(answer, c, arm);
+    card.append(answer);
+    const checks = retrieval && figureChecks(c, arm);
+    if (checks) card.append(checks);
+
+    const grade = el('div', 'grade');
+    grade.append(segment('Score', [['0 wrong', 0], ['1 partial', 1], ['2 correct', 2]], j.correctness, v => setScore(c, arm, v)));
+    grade.append(segment('Response', [['answered', false], ['abstained', true]], j.abstention,
+      v => v ? setAbstained(c, arm) : update(c, arm, {abstention: false})));
+    if (retrieval) {
+      grade.append(segment('Citations', [['supported', 1], ['not supported', 0], ['n/a', null]],
+        // "n/a" only shows as chosen once the answer is marked as an abstention.
+        [0, 1].includes(j.citation_support) ? j.citation_support : j.abstention === true ? null : undefined,
+        v => update(c, arm, {citation_support: v})));
+    }
+    card.append(grade);
+
+    const reason = el('div', 'reason');
+    const input = el('input');
+    input.type = 'text';
+    input.value = j.reason || '';
+    input.maxLength = 1000;
+    input.placeholder = 'Reason for this score';
+    input.setAttribute('aria-label', 'Reason');
+    input.dataset.arm = arm;
+    input.addEventListener('focus', () => activate(arm));
+    input.addEventListener('input', () => {
+      j.reason = input.value;
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(() => save(c, arm), 500);
+      showStatus();
+      renderHeader();
+    });
+    // Saved on leaving the field too; the cards are not rebuilt here so a click on a button still lands.
+    input.addEventListener('change', () => { clearTimeout(saveTimer); save(c, arm); });
+    const suggest = el('div', 'suggest');
+    const options = [...c.required_criteria.map(text => 'Missing: ' + text), ...GENERIC_REASONS];
+    for (const text of options) {
+      const chip = el('button', '', text.length > 70 ? text.slice(0, 67) + '…' : text);
+      chip.type = 'button';
+      chip.title = 'Add to the reason: ' + text;
+      chip.addEventListener('click', event => {
+        event.stopPropagation();
+        const existing = Object.values(AUTO_REASONS).includes(j.reason) ? '' : (j.reason || '').trim();
+        if (!existing.includes(text)) update(c, arm, {reason: existing ? `${existing}; ${text}` : text});
+      });
+      suggest.append(chip);
+    }
+    reason.append(input, suggest);
+    card.append(reason);
+    right.append(card);
+  });
+  if (focusedReason) {
+    const again = right.querySelector(`input[data-arm="${focusedReason}"]`);
+    if (again) again.focus();
+  }
+}
+
+function renderCase() {
+  renderHeader();
+  renderLeft();
+  renderAnswers();
+  $('left').scrollTop = 0;
+  $('right').scrollTop = 0;
+}
+
+// ---- navigation ------------------------------------------------------------
+function moveAnswer(step) {
+  const count = armOrder(current()).length;
+  answerIndex = (answerIndex + step + count) % count;
+  renderAnswers();
+  highlightPassages();
+  document.querySelector('.card.active').scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+function moveCase(step) {
+  caseIndex = Math.min(data.cases.length - 1, Math.max(0, caseIndex + step));
+  answerIndex = 0;
+  renderCase();
+}
+function nextUngraded() {
+  // Every answer in display order, starting just after the active one and wrapping round.
+  const slots = data.cases.flatMap((c, index) => armOrder(c).map((arm, a) => ({index, a, open: missing(c, arm).length > 0})));
+  const here = slots.findIndex(s => s.index === caseIndex && s.a === answerIndex);
+  const target = [...slots.slice(here + 1), ...slots.slice(0, here + 1)].find(s => s.open);
+  if (!target) { setSaveState('All graded'); return; }
+  const changed = target.index !== caseIndex;
+  caseIndex = target.index;
+  answerIndex = target.a;
+  if (changed) renderCase(); else { renderAnswers(); highlightPassages(); }
+  document.querySelector('.card.active').scrollIntoView({behavior: 'smooth', block: 'nearest'});
+}
+
+document.addEventListener('keydown', event => {
+  if (!data || $('dialog').open || event.ctrlKey || event.metaKey || event.altKey) return;
+  const typing = event.target.tagName === 'INPUT' && event.target.type === 'text';
+  if (typing) {
+    if (event.key === 'Escape') event.target.blur();
+    if (event.key === 'Enter') { event.target.blur(); nextUngraded(); }
+    return;
+  }
+  const c = current(), arm = armOrder(c)[answerIndex], key = event.key.toLowerCase();
+  const gradable = !c.answers[arm].error;
+  if (['0', '1', '2'].includes(key) && gradable) setScore(c, arm, Number(key));
+  else if (key === 'a' && gradable) setAbstained(c, arm);
+  else if (key === 'y' && gradable && data.arms[arm].retrieval) update(c, arm, {citation_support: 1});
+  else if (key === 'n' && gradable && data.arms[arm].retrieval) update(c, arm, {citation_support: 0});
+  else if (key === 'r' && gradable) document.querySelector('.card.active .reason input').focus();
+  else if (key === 'arrowdown' || key === 'j') moveAnswer(1);
+  else if (key === 'arrowup' || key === 'k') moveAnswer(-1);
+  else if (key === 'arrowright') moveCase(1);
+  else if (key === 'arrowleft') moveCase(-1);
+  else if (key === 'enter' && event.target.tagName !== 'BUTTON' && event.target.tagName !== 'SUMMARY' && event.target.tagName !== 'A') nextUngraded();
+  else return;
+  event.preventDefault();
+});
+
+// ---- summary ---------------------------------------------------------------
+async function showSummary() {
+  const body = $('dialog-body');
+  body.textContent = 'Computing…';
+  $('dialog').showModal();
+  let result;
+  try {
+    const response = await fetch('/api/summary', {method: 'POST', headers: {'Content-Type': 'application/json'}, body: '{}'});
+    result = await response.json();
+  } catch {
+    result = {error: 'The grading server stopped responding.'};
+  }
+  body.textContent = '';
+  if (result.error) { body.append(el('p', '', result.error)); return; }
+  const wrap = el('div', 'table-wrap'), table = el('table'), headRow = el('tr');
+  for (const title of ['Arm', 'Model', 'Points', 'Fully correct', 'Answerable points', 'Citations supported', 'Has [S#]', 'Sources line', 'Mean seconds']) {
+    headRow.append(el('th', '', title));
+  }
+  table.append(headRow);
+  for (const [name, s] of Object.entries(result.arms)) {
+    const row = el('tr'), n = s.completed;
+    const format = key => key in s.format ? `${s.format[key]}/${n}` : 'n/a';
+    for (const value of [name, s.model, `${s.points}/${s.possible_points}`, `${s.fully_correct}/${n}`,
+      `${s.answerable_points}/${s.answerable_possible_points}`,
+      s.citation_eligible ? `${s.citation_supported}/${s.citation_eligible}` : 'n/a',
+      format('has_citation'), format('has_sources_line'), s.mean_generation_seconds]) {
+      row.append(el('td', '', String(value)));
+    }
+    table.append(row);
+  }
+  wrap.append(table);
+  body.append(wrap, el('p', '', 'Written to ' + result.files.join(' and ') + '.'));
+}
+
+// ---- start -----------------------------------------------------------------
+$('blind').addEventListener('change', () => { answerIndex = 0; renderCase(); });
+$('next').addEventListener('click', nextUngraded);
+$('summary').addEventListener('click', showSummary);
+$('dialog-close').addEventListener('click', () => $('dialog').close());
+(async () => {
+  try {
+    data = await (await fetch('/api/data')).json();
+  } catch {
+    $('problem').append(el('div', 'notice', 'The grading server is not responding. Restart it with: uv run python -m bls_rag.evaluation.judge_ui'));
+    return;
+  }
+  const firstOpen = data.cases.findIndex(c => Object.keys(c.answers).some(arm => missing(c, arm).length));
+  caseIndex = firstOpen < 0 ? 0 : firstOpen;
+  renderCase();
+})();
+</script>
+</body>
+</html>

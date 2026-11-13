@@ -20,7 +20,7 @@ citations. Experiment 02 targets exactly that behaviour.
 
 ```text
 src/bls_rag/            The package: config, index, retrieval, generation, experiment runner, CLI
-  evaluation/           Scoring, reports and offline verification
+  evaluation/           Scoring, reports, offline verification and the experiment-02 grading page
   finetune_data.py      Builds the fine-tuning set from hand-written, PDF-checked examples
   webui.py, webui.html  Local browser UI (`bls-rag ui`)
 corpus/                 The 8 BLS PDFs, source inventory and provenance (HTML cross-checks, reuse terms)
