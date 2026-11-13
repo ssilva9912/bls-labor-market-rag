@@ -22,6 +22,7 @@ citations. Experiment 02 targets exactly that behaviour.
 src/bls_rag/            The package: config, index, retrieval, generation, experiment runner, CLI
   evaluation/           Scoring, reports and offline verification
   finetune_data.py      Builds the fine-tuning set from hand-written, PDF-checked examples
+  webui.py, webui.html  Local browser UI (`bls-rag ui`)
 corpus/                 The 8 BLS PDFs, source inventory and provenance (HTML cross-checks, reuse terms)
 experiments/
   01_rag_eval/          Frozen questions, references, rubric, manifest and results of experiment 01
@@ -59,6 +60,18 @@ uv run bls-rag ask "..." --no-retrieval              # closed-book baseline
 ```
 
 Settings come from environment variables or a local `.env` (see `.env.example`).
+
+### Ask questions in the browser
+
+```powershell
+uv run bls-rag ui            # opens http://127.0.0.1:8000 (--port N, --no-browser)
+```
+
+A local page for the same pipeline as `bls-rag ask`: pick any installed Ollama
+chat model (base or fine-tuned), answer from the documents or closed-book, and
+see the pages the model was given, with a link that opens each PDF at that page.
+It uses only the standard library, listens on localhost only, and answers each
+question on its own (no chat memory).
 
 ### Experiments
 

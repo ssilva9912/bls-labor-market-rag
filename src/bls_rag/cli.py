@@ -38,6 +38,10 @@ def main(argv=None) -> None:
     p.add_argument('--retrieval', choices=['hybrid', 'dense'], default=config()['retrieval_mode'])
     p.add_argument('--no-retrieval', action='store_true', help='Closed-book answer without documents')
 
+    p = sub.add_parser('ui', help='Open a local web page for asking questions')
+    p.add_argument('--port', type=int, default=8000)
+    p.add_argument('--no-browser', action='store_true', help='Do not open the browser automatically')
+
     p = sub.add_parser('corpus', help='Verify (offline) or download the BLS corpus')
     p.add_argument('action', choices=['verify', 'download'])
 
@@ -53,6 +57,9 @@ def main(argv=None) -> None:
         ingest(args.docs)
     elif args.command == 'ask':
         _ask(args)
+    elif args.command == 'ui':
+        from bls_rag import webui
+        webui.serve(args.port, open_browser=not args.no_browser)
     elif args.command == 'corpus':
         from bls_rag import corpus
         print('Verified', corpus.verify(), 'PDFs and provenance offline.') if args.action == 'verify' else corpus.download()
