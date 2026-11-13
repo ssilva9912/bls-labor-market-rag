@@ -1,0 +1,139 @@
+{
+  "frozen_utc": "2026-11-13T09:27:51.367485+00:00",
+  "experiment": "02_finetune",
+  "arms": [
+    {
+      "name": "base_rag",
+      "model": "llama3.1:8b",
+      "retrieval": true
+    },
+    {
+      "name": "ft_rag",
+      "model": "llama3.1-bls-ft",
+      "retrieval": true
+    },
+    {
+      "name": "base_closed_book",
+      "model": "llama3.1:8b",
+      "retrieval": false
+    },
+    {
+      "name": "ft_closed_book",
+      "model": "llama3.1-bls-ft",
+      "retrieval": false
+    }
+  ],
+  "settings": {
+    "provider": "ollama",
+    "chat_model": "llama3.1:8b",
+    "ollama_base_url": "http://127.0.0.1:11434",
+    "embedding_model": "sentence-transformers/all-MiniLM-L6-v2",
+    "chunk_size": 1000,
+    "chunk_overlap": 180,
+    "top_k": 4,
+    "candidate_k": 16,
+    "retrieval_mode": "hybrid",
+    "request_timeout_seconds": 180.0,
+    "generation_deadline_seconds": 240.0,
+    "max_output_tokens": 1024,
+    "num_ctx": 8192,
+    "temperature": 0.0,
+    "seed": 42,
+    "keep_alive": "10m",
+    "request_attempts": 1,
+    "context_unit": "pdf_page",
+    "max_page_chars": 5000
+  },
+  "model_identities": {
+    "llama3.1:8b": {
+      "name": "llama3.1:8b",
+      "digest": "46e0c10c039e019119339687c3c1757cc81b9da49709a3b3924863ba87ca666e",
+      "size": 4920753328,
+      "details": {
+        "parent_model": "",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "8.0B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 4096
+      }
+    },
+    "llama3.1-bls-ft": {
+      "name": "llama3.1-bls-ft:latest",
+      "digest": "561255d74bbbce34901953d971aaceb3f3e940521932c811dcde2de0abedb54b",
+      "size": 5004670298,
+      "details": {
+        "parent_model": "llama3.1:8b",
+        "format": "gguf",
+        "family": "llama",
+        "families": [
+          "llama"
+        ],
+        "parameter_size": "8.0B",
+        "quantization_level": "Q4_K_M",
+        "context_length": 131072,
+        "embedding_length": 4096
+      }
+    }
+  },
+  "ollama_version": {
+    "version": "0.32.6"
+  },
+  "python": "3.12.13",
+  "platform": "Windows-11-10.0.26200-SP0",
+  "package_versions": {
+    "langchain-chroma": "1.1.0",
+    "langchain-ollama": "1.1.0",
+    "langchain-huggingface": "1.2.3",
+    "langchain-community": "0.4.2",
+    "langchain-text-splitters": "1.1.3",
+    "langchain-core": "1.8.0",
+    "chromadb": "1.5.9",
+    "sentence-transformers": "5.7.0",
+    "transformers": "5.22.2",
+    "torch": "2.15.0",
+    "numpy": "2.5.4",
+    "pypdf": "7.0.1",
+    "rank-bm25": "0.2.2",
+    "python-dotenv": "1.2.4",
+    "ollama": "0.6.3",
+    "httpx": "0.28.1"
+  },
+  "hashes": {
+    "experiments/02_finetune/experiment.json": "25971d75e3f38d613bd46ff7874085f44f0b22501f1d71ee7d67bf051fcb115d",
+    "experiments/02_finetune/questions.json": "7cb3fa12cd62e80940c75aff4cb420e4c00d895b415ae6e0472cdeb5e1b0eae1",
+    "corpus/source_inventory.json": "457726897a3a78fc25a9d8a88f3b7f972afc6db192fd27b1e480a32595e67c6d",
+    "corpus/pdfs/01_bls_state_unemployment_annual_2024.pdf": "fcb36fab8019ac1e97f42fb5d510e474dcc3920a2b1cf305ef69de3997d650cb",
+    "corpus/pdfs/02_bls_state_employment_unemployment_dec2024.pdf": "c0d54b13677438f242e6e3804cd9bcf5d9deed5c8839aa8c0af44a4022b8fc15",
+    "corpus/pdfs/03_bls_occupational_employment_wages_may2024.pdf": "240f41978ab36001450941f8d74ca7d58b0c865db6ffb6f72d3fcdc2c438a317",
+    "corpus/pdfs/04_bls_business_employment_dynamics_q42024.pdf": "917f1b835986c0add5b2cf674ece76cad38b85aa0c90fb8634cd7022cdac3a2e",
+    "corpus/pdfs/05_bls_employment_projections_2024_2034.pdf": "2b518bde026a3574c08fa77042c74f2a6028388c515e0c2f3ea8a6dbd01ca12d",
+    "corpus/pdfs/06_bls_metro_employment_unemployment_dec2024.pdf": "1153f6e09fd2d005bb4538358c77934363e2ab66557b43b07b7045269040ab1c",
+    "corpus/pdfs/07_bls_employment_situation_dec2024.pdf": "054e1d65f64df82c21a113af767e5994b4b084d198f391226800943dc29b0b51",
+    "corpus/pdfs/08_bls_job_openings_turnover_dec2024.pdf": "554c58fa002bfe51dfa957765c15d35cc9ac1ee727d678b522ce3b895172beee",
+    "index/manifest.json": "f687fa565a496bf2a33429cb650d1a10193cae1a66fc7be08400ffe08359234f",
+    "index/chunks.jsonl": "5c02f956e29c44c2edb64fbc60b4464c59ea91f7c9a6928547099513786e4147",
+    "src/bls_rag/__init__.py": "22b89fa68e8e333b9e63047f7a57badfbc668e1c73fcd58bf08ca9914dd20fe8",
+    "src/bls_rag/cli.py": "5f7d7006d3e52b974bac856f87b39ed6253785a9fc3a51c82b7091c90298b3a4",
+    "src/bls_rag/config.py": "d2d85e9088c321399677275ca48f67c38d3ce3b876a78f8cb0db8ca302ae50d0",
+    "src/bls_rag/corpus.py": "1bcd9f0cc72e44e81cf60de1fc5e605b96c1b60c276a5f903f6930fc27b674ac",
+    "src/bls_rag/evaluation/__init__.py": "66567bcd33e45b8367a188cd6adb3afe959407bef19c59135e34d9b058f651e4",
+    "src/bls_rag/evaluation/finetune_scoring.py": "c69071454ffe61f9a0d6727901ea9f4bc9ebe19f1eea4f564146ad1a3aa1d4b4",
+    "src/bls_rag/evaluation/references.py": "da281b66805bf04101afc765be707a023ad9951dbc014dec1958efa45ac6da64",
+    "src/bls_rag/evaluation/report.py": "3aa13461832bf5471e115b80fdfa5487e20a826a5e05be43f7c738dd9843e8bf",
+    "src/bls_rag/evaluation/scoring.py": "818e13c3d1ff69bbfd733caa3bc37ec92af0cfc1b7df892edec1c871e0743ee4",
+    "src/bls_rag/evaluation/verify.py": "4a62d4d05be36afe1129caaf1afd4c060bf5ac40c66b457848769b4d71c339a3",
+    "src/bls_rag/experiment.py": "76e026c83460f85479f25ec7845050993b9d0f732bcf4a59ef601c4f87d3b74b",
+    "src/bls_rag/finetune_data.py": "0d41866cb97a2cf4c653cfacfea26a2b6bbd3bd3f32f99d30a64725d7ea7d8fd",
+    "src/bls_rag/generation.py": "c211f1890adadc38802f7fa45886a24e0ca66d81ac4c01bad7e4d7d81578b0c1",
+    "src/bls_rag/index.py": "19e2031935f93e4b427c58a8c0740951991d964a59372752c850b8f24ff864a3",
+    "src/bls_rag/paths.py": "2180b2aa1089e1c7ee2a971bb2e5cb44e42d4c32384ee8c4df8e0c3b2bb7e9fc",
+    "src/bls_rag/retrieval.py": "f91df0231695ab3a40f33fda9c04c3664c09995044507e401ccf08a7d5e0a301",
+    "src/bls_rag/webui.py": "f00747e7e5d9ac8d466f9b285b88c3fd2683ea94705744890e646fc22cf6f743",
+    "src/bls_rag/worker.py": "1e62b155aa04ded1df7014bbdb15d5f8b88bbf17362bd553739a9cb64f2d7407"
+  }
+}

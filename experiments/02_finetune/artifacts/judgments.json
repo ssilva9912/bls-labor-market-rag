@@ -1,0 +1,222 @@
+{
+  "method": "Manual judgments against the saved PDFs using experiment-01 scoring_rubric.md and references.json. correctness 0/1/2; citation_support 0/1 for factual RAG answers, null for pure abstentions; abstention true/false. Grade blind to arm where possible.",
+  "raw_sha256": "ee09343c67e74e8a5c851b07d37e3f5a71c3ef0c743a7a39188d415d71c20812",
+  "cases": {
+    "B1": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B2": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B3": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B4": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B5": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B6": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B7": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B8": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    },
+    "B9": {
+      "base_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      },
+      "ft_closed_book": {
+        "correctness": null,
+        "reason": "",
+        "abstention": null
+      }
+    }
+  }
+}
