@@ -1,7 +1,9 @@
 import copy
 import json
 import unittest
-from evaluation.score_final import OUT, validate
+
+from bls_rag.evaluation.scoring import OUT, validate
+
 
 class FinalScoringTests(unittest.TestCase):
     def setUp(self):

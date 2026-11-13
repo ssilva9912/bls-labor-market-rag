@@ -1,5 +1,6 @@
 import unittest
-from rag_eval import compact_layout, expanded_query, lexical_tokens, page_matches_measure, lexical_search
+
+from bls_rag.retrieval import compact_layout, expanded_query, lexical_search, lexical_tokens, page_matches_measure
 
 
 class FinalRetrievalTests(unittest.TestCase):
@@ -17,7 +18,7 @@ class FinalRetrievalTests(unittest.TestCase):
         self.assertFalse(page_matches_measure('Regional and State Unemployment annual averages?', record))
 
     def test_wide_table_keeps_named_row_and_headers(self):
-        from rag_eval import page_excerpt
+        from bls_rag.retrieval import page_excerpt
         text='Table 1 unemployment\nYear 2023 2024\n'+'Other state 1 2\n'*500+'Washington 4.2 4.5\np Preliminary'
         excerpt=page_excerpt(text,'Washington unemployment?',1500)
         self.assertIn('Washington 4.2 4.5',excerpt)

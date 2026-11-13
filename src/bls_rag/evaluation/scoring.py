@@ -1,15 +1,16 @@
-"""Validate manual source judgments and export fresh page-level evaluation metrics."""
+"""Experiment 01: validate manual judgments and export page-level evaluation metrics."""
 import csv
 import hashlib
 import json
-from pathlib import Path
 from statistics import mean
-ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'artifacts'
+
+from bls_rag.paths import RAG_EVAL_DIR, legacy_path
+
+OUT=RAG_EVAL_DIR/'artifacts'
 K=4
 
 def digest(path):return hashlib.sha256(path.read_bytes()).hexdigest()
-def load(name):return json.loads((ROOT/name).read_text(encoding='utf-8'))
+def load(name):return json.loads(legacy_path(name).read_text(encoding='utf-8'))
 def validate(rows,judgments):
     expected={q['id'] for q in load('questions.json')}
     assert len(rows)==len(expected) and {r['id'] for r in rows}==expected

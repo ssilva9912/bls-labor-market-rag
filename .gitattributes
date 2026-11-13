@@ -1,6 +1,6 @@
-# Frozen assignment/checksum files must retain original bytes on every OS.
+# Frozen evidence files must retain original bytes on every OS.
 # Disable staging/checkout line-ending conversion; textual diffs remain available.
 * -text
 
 # Captured official BLS pages required by source provenance validation.
-provenance/sources/*.htm linguist-vendored=true
+corpus/provenance/sources/*.htm linguist-vendored=true

@@ -1,0 +1,26 @@
+{
+  "description": "Held-out comparison: the nine experiment-01 questions, never used for training. Same retrieval, prompts and generation settings for every arm; only the model and whether passages are supplied differ.",
+  "questions": "questions.json",
+  "arms": [
+    {
+      "name": "base_rag",
+      "model": "llama3.1:8b",
+      "retrieval": true
+    },
+    {
+      "name": "ft_rag",
+      "model": "llama3.1-bls-ft",
+      "retrieval": true
+    },
+    {
+      "name": "base_closed_book",
+      "model": "llama3.1:8b",
+      "retrieval": false
+    },
+    {
+      "name": "ft_closed_book",
+      "model": "llama3.1-bls-ft",
+      "retrieval": false
+    }
+  ]
+}

@@ -1,0 +1,54 @@
+[project]
+name = "bls-rag"
+version = "0.2.0"
+description = "Local RAG and fine-tuning experiments over eight official BLS labor-market reports"
+readme = "README.md"
+requires-python = ">=3.12"
+# Light core: enough for corpus verification, BM25 retrieval logic and offline checks.
+dependencies = [
+    "pypdf>=5,<8",
+    "python-dotenv>=1,<2",
+    "rank-bm25>=0.2.2,<1",
+]
+
+[project.scripts]
+bls-rag = "bls_rag.cli:entrypoint"
+
+[dependency-groups]
+# Full local pipeline: embeddings, Chroma index and Ollama generation.
+rag = [
+    "langchain-chroma>=0.2,<2",
+    "langchain-ollama>=0.3,<2",
+    "langchain-huggingface>=0.1,<2",
+    "langchain-community>=0.3,<1",
+    "langchain-text-splitters>=0.3,<2",
+    "langchain-core>=0.3,<2",
+    "sentence-transformers>=3,<6",
+]
+# Regenerating the experiment-01 reflection PDF.
+docs = ["reportlab>=4,<6"]
+dev = ["ruff>=0.6"]
+
+[tool.uv]
+# `uv sync` installs the full local pipeline; CI uses `--no-default-groups`.
+default-groups = ["rag", "dev"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/bls_rag"]
+
+[tool.ruff]
+line-length = 120
+src = ["src", "scripts", "tests"]
+extend-exclude = ["finetune"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]
+# Experiment-01 scoring/report code keeps its original dense style.
+ignore = ["E501", "E701", "E702", "E731"]
+
+[tool.ruff.lint.per-file-ignores]
+"src/bls_rag/evaluation/report.py" = ["F841"]

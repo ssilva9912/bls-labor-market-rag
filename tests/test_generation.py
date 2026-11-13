@@ -6,8 +6,9 @@ import unittest
 from types import SimpleNamespace
 from unittest.mock import patch
 
-import model_worker
-from rag_eval import BoundedChatModel, ModelCallError, config
+from bls_rag import worker as model_worker
+from bls_rag.config import config
+from bls_rag.generation import BoundedChatModel, ModelCallError
 
 
 class GenerationTests(unittest.TestCase):
@@ -22,7 +23,7 @@ class GenerationTests(unittest.TestCase):
         self.assertEqual(payload['error_category'], 'ollama_failure')
         self.assertNotIn('private', json.dumps(payload))
 
-    @patch('rag_eval.subprocess.run')
+    @patch('bls_rag.generation.subprocess.run')
     def test_deadline_is_a_failure_not_an_answer(self, run):
         run.side_effect = subprocess.TimeoutExpired('worker', 240, stderr='private server details')
         model = BoundedChatModel()
@@ -32,7 +33,7 @@ class GenerationTests(unittest.TestCase):
         self.assertNotIn('private', str(caught.exception))
         self.assertEqual(model.last_call['status'], 'failed')
 
-    @patch('rag_eval.subprocess.run')
+    @patch('bls_rag.generation.subprocess.run')
     def test_worker_start_failure_is_recorded_separately(self, run):
         run.side_effect = OSError('local private path')
         model = BoundedChatModel()
@@ -42,7 +43,7 @@ class GenerationTests(unittest.TestCase):
         self.assertEqual(model.last_call['status'], 'failed')
         self.assertNotIn('private', str(caught.exception))
 
-    @patch('rag_eval.subprocess.run')
+    @patch('bls_rag.generation.subprocess.run')
     def test_success_keeps_answer_and_timing_separate(self, run):
         run.return_value = SimpleNamespace(returncode=0, stdout=json.dumps(
             {'answer': 'Clean answer', 'finish_reason': 'stop',
@@ -53,7 +54,7 @@ class GenerationTests(unittest.TestCase):
         self.assertEqual(model.last_call['status'], 'completed')
         self.assertIn('elapsed_seconds', model.last_call)
 
-    @patch('model_worker.rag.create_ollama_llm')
+    @patch('bls_rag.worker.generation.create_ollama_llm')
     def test_native_ollama_length_stop_is_not_a_completed_answer(self, create):
         create.return_value.invoke.return_value = SimpleNamespace(
             content='incomplete text', response_metadata={'done_reason': 'length',

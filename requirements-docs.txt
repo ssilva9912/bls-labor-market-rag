@@ -1,3 +1,0 @@
-# Document generation only; runtime requirements are separate.
-reportlab>=4,<6
-pypdf>=5,<8

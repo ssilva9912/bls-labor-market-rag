@@ -1,10 +1,12 @@
-import unittest
 import tempfile
+import unittest
 import zipfile
 from pathlib import Path
 from unittest.mock import patch
+
 import scripts.publication_audit as audit_module
-from scripts.publication_audit import permitted, PATTERNS
+from scripts.publication_audit import PATTERNS, permitted
+
 
 class PublicationAuditTests(unittest.TestCase):
     def test_supported_text_encodings_are_strict(self):
@@ -21,18 +23,18 @@ class PublicationAuditTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as directory:
             root=Path(directory)
             (root/'provenance').mkdir()
-            (root/'artifacts').mkdir()
+            (root/'experiments/x/artifacts').mkdir(parents=True)
             html='provenance/legacy.htm'
             (root/html).write_bytes(('<!DOCTYPE HTML><p>\u2013 '+secret+'</p>').encode('cp1252'))
-            docx='artifacts/test.docx'
+            docx='experiments/x/artifacts/test.docx'
             with zipfile.ZipFile(root/docx,'w') as doc:
                 doc.writestr('word/document.xml','<document><t>'+secret[:10]+'</t><t>'+secret[10:]+'</t></document>')
-            bad='artifacts/bad.json'
+            bad='experiments/x/artifacts/bad.json'
             (root/bad).write_bytes(b'\x96')
-            pdf='artifacts/reflection.pdf'
+            pdf='experiments/x/artifacts/reflection.pdf'
             # A real, minimal text PDF keeps this regression independent of reportlab.
             from pypdf import PdfWriter
-            from pypdf.generic import DecodedStreamObject, NameObject, DictionaryObject
+            from pypdf.generic import DecodedStreamObject, DictionaryObject, NameObject
             writer=PdfWriter()
             page=writer.add_blank_page(612,792)
             font=DictionaryObject({NameObject('/Type'):NameObject('/Font'),NameObject('/Subtype'):NameObject('/Type1'),NameObject('/BaseFont'):NameObject('/Helvetica')})
@@ -48,17 +50,19 @@ class PublicationAuditTests(unittest.TestCase):
             self.assertNotIn(secret,str(findings))
 
     def test_local_assets_and_credentials_cannot_be_proposed(self):
-        for name in ['.env','submission/.env','submission/index/chroma.sqlite3',
-                     'docs/source.pdf','submission/docs/source.pdf','archive/credentials.py',
+        for name in ['.env','finetune/.env','index/chroma.sqlite3',
+                     'corpus/pdfs/source.pdf','notes/source.pdf','archive/credentials.py',
                      '.venv/Lib/file.py','tmp/output.json','weights.gguf',
-                     'artifacts/~$reflection.docx']:
+                     'finetune/outputs/adapter_model.safetensors','experiments/02_finetune/model.gguf',
+                     'experiments/01_rag_eval/artifacts/~$reflection.docx']:
             with self.subTest(name=name):
                 self.assertFalse(permitted(name))
 
     def test_assignment_analysis_and_public_configuration_remain_publishable(self):
-        for name in ['.env.example','artifacts/reflection.pdf',
-                     'artifacts/final_evaluation.jsonl','docs/source_inventory.json',
-                     '.github/workflows/ci.yml']:
+        for name in ['.env.example','experiments/01_rag_eval/artifacts/reflection.pdf',
+                     'experiments/01_rag_eval/artifacts/final_evaluation.jsonl','corpus/source_inventory.json',
+                     'corpus/pdfs/01_bls_state_unemployment_annual_2024.pdf',
+                     'finetune/train.py','.github/workflows/ci.yml']:
             with self.subTest(name=name):
                 self.assertTrue(permitted(name))
 

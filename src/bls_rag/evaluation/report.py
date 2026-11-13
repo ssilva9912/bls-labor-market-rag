@@ -1,11 +1,12 @@
 """Build the editable one-page reflection from the fresh scored results (OOXML, no model calls)."""
-import json
 import argparse
-from pathlib import Path
+import json
 from xml.sax.saxutils import escape
-from zipfile import ZipFile,ZIP_DEFLATED
-ROOT=Path(__file__).resolve().parents[1]
-OUT=ROOT/'artifacts'
+from zipfile import ZIP_DEFLATED, ZipFile
+
+from bls_rag.paths import RAG_EVAL_DIR
+
+OUT=RAG_EVAL_DIR/'artifacts'
 
 def build():
     s=json.loads((OUT/'summary.json').read_text());r=s['retrieval']
@@ -42,15 +43,16 @@ def build():
     with ZipFile(OUT/'reflection.docx','w',ZIP_DEFLATED) as archive:
         for name,content in {'[Content_Types].xml':types,'_rels/.rels':rels,'word/document.xml':document,'word/styles.xml':styles,'word/_rels/document.xml.rels':docrels}.items():archive.writestr(name,content)
     (OUT/'reflection.md').write_text('# '+title+'\n\n'+'\n\n'.join('## '+h+'\n\n'+t for h,t in paragraphs)+'\n',encoding='utf-8')
-    (OUT/'quality_assessment.md').write_text('# Quality assessment\n\n'+'\n\n'.join(t for _,t in paragraphs)+f'\n\nCitation support excludes the two pure RAG abstentions (B1/B9), leaving seven factual responses. Answer correctness includes all nine completed cases; answerable-only denominators are eight questions / sixteen points. The B3 contradictory partial abstention is retained and receives zero under the frozen core-contradiction rule. No transport failures were treated as wrong answers.\n',encoding='utf-8')
+    (OUT/'quality_assessment.md').write_text('# Quality assessment\n\n'+'\n\n'.join(t for _,t in paragraphs)+'\n\nCitation support excludes the two pure RAG abstentions (B1/B9), leaving seven factual responses. Answer correctness includes all nine completed cases; answerable-only denominators are eight questions / sixteen points. The B3 contradictory partial abstention is retained and receives zero under the frozen core-contradiction rule. No transport failures were treated as wrong answers.\n',encoding='utf-8')
     print('Created editable reflection.docx from fresh results; export in Word and verify one page.')
 def pdf():
-    from reportlab.lib.styles import getSampleStyleSheet,ParagraphStyle
-    from reportlab.platypus import SimpleDocTemplate,Paragraph,Spacer,Table,TableStyle
+    from xml.etree import ElementTree as ET
+
+    from pypdf import PdfReader
     from reportlab.lib import colors
     from reportlab.lib.pagesizes import letter
-    from pypdf import PdfReader
-    from xml.etree import ElementTree as ET
+    from reportlab.lib.styles import ParagraphStyle, getSampleStyleSheet
+    from reportlab.platypus import Paragraph, SimpleDocTemplate, Spacer, Table, TableStyle
     with ZipFile(OUT/'reflection.docx') as archive:
         doc=ET.fromstring(archive.read('word/document.xml'))
     ns={'w':'http://schemas.openxmlformats.org/wordprocessingml/2006/main'}

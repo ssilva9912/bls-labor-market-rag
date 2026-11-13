@@ -1,7 +1,7 @@
 # BLS source reuse and attribution
 
 All eight corpus files are unmodified official U.S. Bureau of Labor Statistics
-PDF releases. Their exact URLs, dates and hashes are in `docs/source_inventory.json`.
+PDF releases. Their exact URLs, dates and hashes are in `corpus/source_inventory.json`.
 Source attribution: **U.S. Bureau of Labor Statistics (BLS)**.
 
 [BLS Copyright Information](https://www.bls.gov/opub/copyright-information.htm)
@@ -13,7 +13,7 @@ Official PDF branding remains part of the original documents. The selected
 releases contain BLS statistical text, tables and charts; no credited third-party
 photograph or illustration has been selected for reuse as project artwork.
 
-`provenance/reuse_terms.json` records the official-policy review and its access
+`corpus/provenance/reuse_terms.json` records the official-policy review and its access
 method. Direct Python GET of the policy returned403, while official web browsing
 successfully displayed it. All eight release PDFs and HTML versions downloaded
 successfully with HTTP200. These are source-specific observations, not an

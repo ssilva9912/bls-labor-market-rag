@@ -2,10 +2,10 @@
 import csv
 import json
 import re
-from pathlib import Path
+
 from pypdf import PdfReader
 
-ROOT = Path(__file__).resolve().parents[1]
+from bls_rag.paths import PDF_DIR, RAG_EVAL_DIR
 
 
 def normalized(text):
@@ -13,14 +13,14 @@ def normalized(text):
 
 
 def main():
-    refs = json.loads((ROOT / 'references.json').read_text(encoding='utf-8'))
-    questions = {q['id']: q for q in json.loads((ROOT / 'questions.json').read_text(encoding='utf-8'))}
+    refs = json.loads((RAG_EVAL_DIR / 'references.json').read_text(encoding='utf-8'))
+    questions = {q['id']: q for q in json.loads((RAG_EVAL_DIR / 'questions.json').read_text(encoding='utf-8'))}
     readers = {}
     rows = []
     for ref in refs:
         for evidence in ref['evidence']:
             name, number = evidence['filename'], evidence['pdf_page']
-            reader = readers.setdefault(name, PdfReader(ROOT / 'docs' / name))
+            reader = readers.setdefault(name, PdfReader(PDF_DIR / name))
             source = normalized(reader.pages[number - 1].extract_text())
             cursor = 0
             for line in evidence['supporting_excerpt'].splitlines():
@@ -37,7 +37,7 @@ def main():
             'pdf_page': '; '.join(str(e['pdf_page']) for e in ref['evidence']),
             'supporting_excerpt': '\n\n'.join(f"{e['filename']} PDF p.{e['pdf_page']}: {e['supporting_excerpt']}" for e in ref['evidence']),
             'required_criteria': '\n'.join(ref['required_criteria']), 'ambiguity': ref['ambiguity']})
-    out = ROOT / 'artifacts'
+    out = RAG_EVAL_DIR / 'artifacts'
     out.mkdir(exist_ok=True)
     with (out / 'source_reference_table.csv').open('w', encoding='utf-8-sig', newline='') as f:
         writer = csv.DictWriter(f, fieldnames=list(rows[0]))

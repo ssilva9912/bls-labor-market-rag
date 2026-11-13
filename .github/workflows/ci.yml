@@ -1,4 +1,4 @@
-name: BLS Labor Market RAG offline validation
+name: Offline validation
 
 on:
   push:
@@ -11,7 +11,7 @@ permissions:
 jobs:
   offline:
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 15
     env:
       HF_HUB_OFFLINE: '1'
       TRANSFORMERS_OFFLINE: '1'
@@ -19,29 +19,25 @@ jobs:
       PYTHONDONTWRITEBYTECODE: '1'
       RUN_LIVE_OLLAMA_TESTS: '0'
       RUN_LIVE_RETRIEVAL_TESTS: '0'
+      # Light core only: no torch, embeddings, Chroma or Ollama in CI.
+      UV_NO_DEFAULT_GROUPS: '1'
     steps:
       - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
         with:
-          python-version: '3.12'
-          cache: pip
-          cache-dependency-path: requirements-test.txt
-      - name: Install offline test dependencies (no models)
+          fetch-depth: 0  # the submission-v1 tag is needed to verify frozen runtime code
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+      - name: Install (locked, core only)
+        run: uv sync --locked --group dev
+      - name: Lint
+        run: uv run ruff check
+      - name: Offline tests (live tests report explicit skips)
+        run: uv run python -m unittest discover -s tests -v
+      - name: Corpus, frozen experiment-01 evidence and tagged runtime code
         run: |
-          python -m pip install --upgrade pip
-          python -m pip install -r requirements-test.txt
-          python -m pip check
-      - name: Run automated tests (live tests report explicit skips)
-        run: python -m unittest discover -s tests -v
-      - name: Validate published submission offline
-        run: |
-          python sources.py verify
-          python -m scripts.verify_submission --offline
-      - name: Publication inventory and secret-pattern check
-        run: python -m scripts.publication_audit --check
-      - name: Build and verify reproducible complete assignment ZIP
-        run: |
-          python -m scripts.package_submission
-          cp tmp/bls-labor-market-rag-submission.zip /tmp/first-submission.zip
-          python -m scripts.package_submission
-          cmp /tmp/first-submission.zip tmp/bls-labor-market-rag-submission.zip
+          uv run bls-rag corpus verify
+          uv run bls-rag verify
+          uv run python -m scripts.verify_frozen_tag
+      - name: Publication path and secret-pattern scan
+        run: uv run python -m scripts.publication_audit
