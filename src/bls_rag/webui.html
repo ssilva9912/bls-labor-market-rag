@@ -56,7 +56,14 @@
   details { border-radius: 6px; padding: 4px 6px; margin: 0 -6px; }
   details.flash { background: var(--chip); }
   summary { cursor: pointer; font-size: .92rem; overflow-wrap: anywhere; }
-  summary a { color: var(--accent); margin-left: 6px; white-space: nowrap; }
+  summary a {
+    display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; padding: 1px 9px; vertical-align: middle;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text);
+    font-size: .8rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+  }
+  summary a svg { width: 13px; height: 13px; }
+  summary a:hover { border-color: var(--accent); color: var(--accent); }
+  summary a:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
   .excerpt {
     background: var(--excerpt); border-radius: 6px; padding: 10px; margin: 6px 0 4px; max-height: 260px;
     overflow: auto; white-space: pre-wrap; font: .8rem/1.45 ui-monospace, Consolas, monospace;
@@ -113,6 +120,8 @@ const EXAMPLES = [
   "How many job openings were there at the end of December 2024?",
   "Which occupations are projected to grow fastest from 2024 to 2034?",
 ];
+const PDF_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">'
+  + '<path d="M3.75 1.75h5.5l3 3v9.5h-8.5z"/><path d="M9.25 1.75v3h3"/><path d="M6 8.5h4M6 11h4" stroke-linecap="round"/></svg>';
 const $ = id => document.getElementById(id);
 const el = (tag, className, text) => {
   const node = document.createElement(tag);
@@ -183,7 +192,10 @@ function renderSources(card, sources) {
     item.dataset.rank = s.rank;
     item.dataset.label = `${s.source}, page ${s.page}`;
     const summary = el('summary', '', `S${s.rank} · ${s.source}, page ${s.page}`);
-    const link = el('a', '', 'Open PDF');
+    const link = el('a');
+    link.innerHTML = PDF_ICON;  // fixed markup, no page data
+    link.append(`PDF · p. ${s.page}`);
+    link.title = `Open ${s.source} at page ${s.page} in a new tab`;
     link.href = `/pdf/${encodeURIComponent(s.source)}#page=${s.page}`;
     link.target = '_blank';
     link.rel = 'noopener';

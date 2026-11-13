@@ -74,10 +74,33 @@
     white-space: pre-wrap; overflow-wrap: anywhere; font: .8rem/1.45 ui-monospace, Consolas, monospace;
   }
   .passage-text { max-height: 340px; overflow: auto; }
-  details { margin: 2px 0; }
+  details { margin: 4px 0; }
   details.flash > summary { background: var(--chip); }
-  summary { cursor: pointer; padding: 3px 4px; border-radius: 5px; overflow-wrap: anywhere; font-size: .9rem; }
+  summary {
+    cursor: pointer; padding: 4px 6px; border-radius: 6px; font-size: .9rem; list-style: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::before { content: "▸"; color: var(--muted); flex: none; transition: transform .15s; }
+  details[open] > summary::before { transform: rotate(90deg); }
+  summary:hover { background: var(--excerpt); }
+  .where { flex: 1; min-width: 0; }
+  .where b { font-weight: 600; margin-right: 6px; }
+  .where .tag { margin-left: 8px; }
+  .where .file { color: var(--muted); font-size: .78rem; overflow-wrap: anywhere; }
+  .evidence-head { display: flex; align-items: center; gap: 10px; margin: 0 0 4px; }
   a { color: var(--accent); }
+  .pdf {
+    display: inline-flex; align-items: center; gap: 6px; flex: none; padding: 3px 10px;
+    border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text);
+    font-size: .82rem; font-weight: 600; text-decoration: none; white-space: nowrap;
+  }
+  .pdf svg { width: 14px; height: 14px; flex: none; }
+  .pdf:hover { border-color: var(--accent); color: var(--accent); }
+  .pdf:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .pdf.main { background: var(--accent); color: var(--accent-text); border-color: transparent; padding: 5px 12px; }
+  .pdf.main:hover { color: var(--accent-text); filter: brightness(1.1); }
+  @media (prefers-reduced-motion: reduce) { summary::before { transition: none; } }
   mark { background: var(--mark); color: inherit; border-radius: 3px; padding: 0 1px; }
   .card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin: 0 0 14px; }
   .card.active { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
@@ -134,7 +157,7 @@
   </div>
   <p class="keys">
     <kbd>2</kbd> correct <kbd>1</kbd> partial <kbd>0</kbd> wrong · <kbd>A</kbd> abstained ·
-    citations <kbd>Y</kbd> supported <kbd>N</kbd> not · <kbd>R</kbd> reason ·
+    citations <kbd>Y</kbd> supported <kbd>N</kbd> not · <kbd>R</kbd> reason · <kbd>P</kbd> reference PDF ·
     <kbd>↑</kbd><kbd>↓</kbd> answer · <kbd>←</kbd><kbd>→</kbd> question · <kbd>Enter</kbd> next ungraded
   </p>
 </header>
@@ -275,11 +298,18 @@ function renderHeader() {
   $('summary').disabled = graded < gradable.length;
 }
 
-function pdfLink(source, page) {
-  const link = el('a', '', 'Open PDF');
-  link.href = `/pdf/${encodeURIComponent(source)}#page=${page}`;
+const PDF_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">'
+  + '<path d="M3.75 1.75h5.5l3 3v9.5h-8.5z"/><path d="M9.25 1.75v3h3"/><path d="M6 8.5h4M6 11h4" stroke-linecap="round"/></svg>';
+const pdfUrl = (source, page) => `/pdf/${encodeURIComponent(source)}#page=${page}`;
+function pdfLink(source, page, main) {
+  const link = el('a', 'pdf' + (main ? ' main' : ''));
+  link.innerHTML = PDF_ICON;  // fixed markup, no page data
+  link.append(main ? `Open PDF at page ${page}` : `PDF · p. ${page}`);
+  link.href = pdfUrl(source, page);
   link.target = '_blank';
   link.rel = 'noopener';
+  link.title = `Open ${source} at page ${page} in a new tab`;
+  link.addEventListener('click', event => event.stopPropagation());  // do not also fold the passage
   return link;
 }
 
@@ -307,17 +337,21 @@ function renderLeft() {
   left.append(criteria);
   if (c.evidence.length) left.append(el('h3', '', 'Where the answer is'));
   for (const e of c.evidence) {
-    const line = el('div', '', `${e.filename}, page ${e.pdf_page} `);
-    line.append(pdfLink(e.filename, e.pdf_page));
+    const line = el('div', 'evidence-head');
+    const where = el('div', 'where');
+    where.append(el('b', '', `Page ${e.pdf_page}`), el('div', 'file', e.filename));
+    line.append(where, pdfLink(e.filename, e.pdf_page, true));
     left.append(line, el('div', 'evidence', e.supporting_excerpt));
   }
   left.append(el('h3', '', 'Pages the models were given'));
   for (const p of c.passages) {
     const item = el('details');
     item.id = 'passage-' + p.rank;
-    const summary = el('summary', '', `S${p.rank} · ${p.source}, page ${p.page} `);
-    if (p.reference) summary.append(el('span', 'tag good', 'reference page'), ' ');
-    summary.append(pdfLink(p.source, p.page));
+    const summary = el('summary'), where = el('span', 'where'), first = el('div');
+    first.append(el('b', '', 'S' + p.rank), `page ${p.page}`);
+    if (p.reference) first.append(el('span', 'tag good', 'reference page'));
+    where.append(first, el('div', 'file', p.source));
+    summary.append(where, pdfLink(p.source, p.page));
     item.append(summary, el('div', 'passage-text'));
     left.append(item);
   }
@@ -556,6 +590,7 @@ document.addEventListener('keydown', event => {
   else if (key === 'y' && gradable && data.arms[arm].retrieval) update(c, arm, {citation_support: 1});
   else if (key === 'n' && gradable && data.arms[arm].retrieval) update(c, arm, {citation_support: 0});
   else if (key === 'r' && gradable) document.querySelector('.card.active .reason input').focus();
+  else if (key === 'p' && c.evidence.length) window.open(pdfUrl(c.evidence[0].filename, c.evidence[0].pdf_page), '_blank', 'noopener');
   else if (key === 'arrowdown' || key === 'j') moveAnswer(1);
   else if (key === 'arrowup' || key === 'k') moveAnswer(-1);
   else if (key === 'arrowright') moveCase(1);
