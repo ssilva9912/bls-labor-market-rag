@@ -26,8 +26,13 @@ The dataset is built from the repo root on Windows or WSL: `uv run python -m bls
 ```bash
 uv run train.py --smoke-test     # 5 steps on the longest example; prints peak VRAM
 uv run train.py                  # full run (~44 examples × 3 epochs), saves outputs/bls-ft/adapter
-uv run export.py                 # writes outputs/bls-ft/Modelfile (FROM llama3.1:8b + ADAPTER)
+uv run export.py                 # writes outputs/bls-ft/Modelfile (FROM llama3.1:8b + ADAPTER) and ollama_adapter/
 ```
+
+`export.py` copies the adapter to `outputs/bls-ft/ollama_adapter/` with the
+weights renamed to `model.safetensors`, because `ollama create` does not pick
+up PEFT's `adapter_model.safetensors` name. If you trained in a WSL clone, copy
+`outputs/bls-ft/` into the Windows checkout first (it is git-ignored).
 
 Then in Windows PowerShell, from the repo root:
 

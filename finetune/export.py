@@ -32,6 +32,20 @@ def base_modelfile() -> str | None:
     return None
 
 
+def ollama_adapter(run: Path) -> Path:
+    """Copy the adapter into the layout ``ollama create`` accepts.
+
+    Ollama (seen with 0.32.6) does not pick up PEFT's ``adapter_model.safetensors``
+    from an ADAPTER directory ("no Modelfile or safetensors files found"), but it
+    converts the same weights when the file is named ``model.safetensors``.
+    """
+    target = run / 'ollama_adapter'
+    target.mkdir(exist_ok=True)
+    shutil.copy2(run / 'adapter' / 'adapter_config.json', target / 'adapter_config.json')
+    shutil.copy2(run / 'adapter' / 'adapter_model.safetensors', target / 'model.safetensors')
+    return target
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--run', type=Path, default=HERE / 'outputs' / 'bls-ft')
@@ -43,7 +57,7 @@ def main() -> None:
         raise SystemExit(f'No adapter at {adapter}; run train.py first.')
 
     if not args.gguf:
-        modelfile = f'FROM {BASE_OLLAMA}\nADAPTER ./adapter\n'
+        modelfile = f'FROM {BASE_OLLAMA}\nADAPTER ./{ollama_adapter(args.run).name}\n'
     else:
         from unsloth import FastLanguageModel
         model, tokenizer = FastLanguageModel.from_pretrained(str(adapter), max_seq_length=8192, load_in_4bit=True)
