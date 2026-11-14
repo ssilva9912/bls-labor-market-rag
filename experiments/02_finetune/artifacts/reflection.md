@@ -20,7 +20,7 @@ Not fixed: on B2 both models report the correct 4.5 percent but say the estimate
 
 ## Is it worth it
 
-Training cost no money and 11 minutes on an 8 GB laptop GPU; answers took 14.1 seconds on average against 12.6. The real cost is writing and checking the examples against the PDFs: [HOURS] hours here. For that, the gain was four points on two questions, two more supported citations and a consistent answer format. Fine-tuning is worth considering when a fixed citation format matters and the base model ignores the instruction. It is not a way to add facts, which retrieval supplies, and it cannot recover a table row that excerpting removed. A stronger prompt with one worked example is cheaper and was not tested here, so this experiment does not show that fine-tuning was necessary.
+Training cost no money and 11 minutes on an 8 GB laptop GPU; answers took 14.1 seconds on average against 12.6. The real cost is reviewing and checking the examples against the PDFs: about one hour here. For that, the gain was four points on two questions, two more supported citations and a consistent answer format. Fine-tuning is worth considering when a fixed citation format matters and the base model ignores the instruction. It is not a way to add facts, which retrieval supplies, and it cannot recover a table row that excerpting removed. A stronger prompt with one worked example is cheaper and was not tested here, so this experiment does not show that fine-tuning was necessary.
 
 ## Limits
 
