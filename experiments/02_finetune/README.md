@@ -19,7 +19,7 @@ being trained. So the expectation is:
 |---|---|---|
 | Base model | Llama 3.1 8B Instruct (Unsloth 4-bit for training, Ollama `llama3.1:8b` Q4_K_M for inference) | Same model as experiment 01 |
 | Method | QLoRA, r=16, alpha=16, all attention + MLP projections, 3 epochs, lr 2e-4, effective batch 8 | Standard small-data settings; fits 8 GB |
-| Training data | 44 hand-written examples: 34 answerable, 2 partial, 8 unanswerable | Assignment asks for 20–50 |
+| Training data | 44 curated examples, drafted with an AI assistant and reviewed against the PDFs: 34 answerable, 2 partial, 8 unanswerable | Assignment asks for 20–50 |
 | Input | The exact inference prompt (`RAG_SYSTEM`) with 3 compacted PDF-page passages; gold page at a random rank among BM25 distractors | Model learns to find and cite the right `[S#]` |
 | Target | Short answer, every fact cited `[S#]`, caveats for preliminary data and projections, final `Sources:` line; the exact abstention sentence when the answer is absent | The behaviour experiment 01 lacked |
 | Loss | Assistant answer tokens only | Don't train the model to reproduce passages |

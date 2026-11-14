@@ -2,7 +2,7 @@
 
 ## Question and setup
 
-Experiment 01 showed that retrieval already finds the right pages, but the local 8B model mishandles them. This experiment tests whether a small QLoRA fine-tune fixes that answering behaviour. Llama 3.1 8B Instruct was trained on 44 hand-written examples (34 answerable, 2 partial, 8 unanswerable) that reuse the exact inference prompt, with loss on the answer only. The 84 MB adapter is layered on the same Ollama `llama3.1:8b` weights. Four arms answered the nine experiment-01 questions once each: base and fine-tuned, with retrieved pages and closed-book. No evaluation question or reference page appears in the training data.
+Experiment 01 showed that retrieval already finds the right pages, but the local 8B model mishandles them. This experiment tests whether a small QLoRA fine-tune fixes that answering behaviour. Llama 3.1 8B Instruct was trained on 44 curated examples (34 answerable, 2 partial, 8 unanswerable), drafted with an AI assistant and reviewed against the PDFs. They reuse the exact inference prompt, and loss is computed on the answer only. The 84 MB adapter is layered on the same Ollama `llama3.1:8b` weights. Four arms answered the nine experiment-01 questions once each: base and fine-tuned, with retrieved pages and closed-book. No evaluation question or reference page appears in the training data.
 
 ## What changed with retrieved pages
 
