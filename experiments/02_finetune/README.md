@@ -118,9 +118,10 @@ and checked against the PDFs, and that work grows with the dataset, while the
 training compute stays near zero. Record the hours actually spent alongside
 `train_summary.json`; it is the main input to "is it worth it?"
 
-## Reflection (fill in after scoring)
+## Reflection
 
-One page, covering:
+Written up in [artifacts/reflection.md](artifacts/reflection.md), with the scores in
+[artifacts/comparison.md](artifacts/comparison.md). One page, covering:
 
 1. What changed between base + RAG and ft + RAG (correctness, citation support, format compliance, abstentions on B9).
 2. Whether closed-book scores moved. Little change is evidence that fine-tuning changed behaviour, not knowledge.

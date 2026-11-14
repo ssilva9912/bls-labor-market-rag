@@ -1,221 +1,221 @@
 {
-  "method": "Manual judgments against the saved PDFs using experiment-01 scoring_rubric.md and references.json. correctness 0/1/2; citation_support 0/1 for factual RAG answers, null for pure abstentions; abstention true/false. Grade blind to arm where possible.",
+  "method": "Manual judgments by the author against the saved PDFs using experiment-01 scoring_rubric.md and references.json, made in the grading page with arms hidden and with the advisory judgments of an LLM second grader (judgments_second_grader.json) visible as suggestions. correctness 0/1/2; citation_support 0/1 for factual RAG answers, null for pure abstentions; abstention true/false.",
   "raw_sha256": "ee09343c67e74e8a5c851b07d37e3f5a71c3ef0c743a7a39188d415d71c20812",
   "cases": {
     "B1": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true,
         "citation_support": null
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "Correct 4.5 percent, but cites page 2; the Washington row is on page 9.",
+        "abstention": false,
+        "citation_support": 0
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       }
     },
     "B2": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 0,
+        "reason": "Missing: The December 2024 estimate is preliminary, not an annual average.",
+        "abstention": false,
+        "citation_support": 0
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 0,
+        "reason": "Missing: The December 2024 estimate is preliminary, not an annual average.",
+        "abstention": false,
+        "citation_support": 0
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Missing: The December 2024 estimate is preliminary, not an annual average.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       }
     },
     "B3": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true,
+        "citation_support": 0
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       }
     },
     "B4": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 0
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       }
     },
     "B5": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "hallucinated",
+        "abstention": false
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "hallucinated",
+        "abstention": false
       }
     },
     "B6": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "hallucinated answer",
+        "abstention": false
       }
     },
     "B7": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       }
     },
     "B8": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
-        "citation_support": null
+        "correctness": 2,
+        "reason": "All required facts and qualifications present.",
+        "abstention": false,
+        "citation_support": 1
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 0,
+        "reason": "Abstained on an answerable question.",
+        "abstention": true
       }
     },
     "B9": {
       "base_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
+        "correctness": 2,
+        "reason": "Explicit abstention without inventing a rate.",
+        "abstention": true,
         "citation_support": null
       },
       "ft_rag": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null,
+        "correctness": 2,
+        "reason": "Explicit abstention without inventing a rate.",
+        "abstention": true,
         "citation_support": null
       },
       "base_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 2,
+        "reason": "Explicit abstention without inventing a rate.",
+        "abstention": true
       },
       "ft_closed_book": {
-        "correctness": null,
-        "reason": "",
-        "abstention": null
+        "correctness": 2,
+        "reason": "Explicit abstention without inventing a rate.",
+        "abstention": true
       }
     }
   }

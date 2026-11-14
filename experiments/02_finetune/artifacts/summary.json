@@ -1,0 +1,115 @@
+{
+  "questions": 9,
+  "answerable": 8,
+  "arms": {
+    "base_rag": {
+      "model": "llama3.1:8b",
+      "retrieval": true,
+      "completed": 9,
+      "errors": [],
+      "points": 12,
+      "possible_points": 18,
+      "fully_correct": 6,
+      "answerable_points": 10,
+      "answerable_possible_points": 16,
+      "abstentions": [
+        "B1",
+        "B3",
+        "B9"
+      ],
+      "citation_supported": 4,
+      "citation_eligible": 7,
+      "format": {
+        "has_citation": 7,
+        "citations_in_range": 9,
+        "has_sources_line": 1,
+        "exact_abstention": 2
+      },
+      "mean_words": 33.4,
+      "mean_generation_seconds": 12.606,
+      "mean_output_tokens": 55.1
+    },
+    "ft_rag": {
+      "model": "llama3.1-bls-ft",
+      "retrieval": true,
+      "completed": 9,
+      "errors": [],
+      "points": 16,
+      "possible_points": 18,
+      "fully_correct": 8,
+      "answerable_points": 14,
+      "answerable_possible_points": 16,
+      "abstentions": [
+        "B9"
+      ],
+      "citation_supported": 6,
+      "citation_eligible": 8,
+      "format": {
+        "has_citation": 8,
+        "citations_in_range": 9,
+        "has_sources_line": 9,
+        "exact_abstention": 1
+      },
+      "mean_words": 31.6,
+      "mean_generation_seconds": 14.13,
+      "mean_output_tokens": 67.6
+    },
+    "base_closed_book": {
+      "model": "llama3.1:8b",
+      "retrieval": false,
+      "completed": 9,
+      "errors": [],
+      "points": 2,
+      "possible_points": 18,
+      "fully_correct": 1,
+      "answerable_points": 0,
+      "answerable_possible_points": 16,
+      "abstentions": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B6",
+        "B7",
+        "B8",
+        "B9"
+      ],
+      "citation_supported": null,
+      "citation_eligible": null,
+      "format": {
+        "exact_abstention": 0
+      },
+      "mean_words": 93.2,
+      "mean_generation_seconds": 13.443,
+      "mean_output_tokens": 127.1
+    },
+    "ft_closed_book": {
+      "model": "llama3.1-bls-ft",
+      "retrieval": false,
+      "completed": 9,
+      "errors": [],
+      "points": 2,
+      "possible_points": 18,
+      "fully_correct": 1,
+      "answerable_points": 0,
+      "answerable_possible_points": 16,
+      "abstentions": [
+        "B1",
+        "B2",
+        "B3",
+        "B4",
+        "B7",
+        "B8",
+        "B9"
+      ],
+      "citation_supported": null,
+      "citation_eligible": null,
+      "format": {
+        "exact_abstention": 0
+      },
+      "mean_words": 94.2,
+      "mean_generation_seconds": 13.958,
+      "mean_output_tokens": 123.7
+    }
+  }
+}

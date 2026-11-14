@@ -8,7 +8,7 @@ for retrieval, and Unsloth QLoRA for fine-tuning. No hosted model APIs are used.
 | Experiment | Question | Status |
 |---|---|---|
 | [01 – RAG vs closed book](experiments/01_rag_eval/) | Does page-level hybrid retrieval make an 8B model answer BLS questions correctly? | Done, frozen (`submission-v1`) |
-| [02 – Fine-tuning](experiments/02_finetune/) | Does a small QLoRA fine-tune fix the *answer-format* failures RAG left behind, and is it worth it vs prompting/RAG? | Dataset built; training runs locally |
+| [02 – Fine-tuning](experiments/02_finetune/) | Does a small QLoRA fine-tune fix the *answer-format* failures RAG left behind, and is it worth it vs prompting/RAG? | Run and scored: fine-tuned + RAG 16/18 vs base + RAG 12/18; closed-book unchanged at 2/18 |
 
 **Experiment 01 headline:** RAG scored 12/18 vs 2/18 without retrieval, and
 reference-page recall@4 was 100%. The failures were in *generation*: a wrong
