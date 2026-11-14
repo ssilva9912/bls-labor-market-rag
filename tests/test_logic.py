@@ -1,9 +1,11 @@
+import json
 import unittest
 from types import SimpleNamespace
 from unittest.mock import Mock
 
-from rag_eval import fuse_ranked_lists, tokenize, read_questions, invoke_model, response_text
-from rag_eval import lexical_tokens, lexical_search, hybrid_selection
+from bls_rag.generation import invoke_model, response_text
+from bls_rag.paths import RAG_EVAL_DIR
+from bls_rag.retrieval import fuse_ranked_lists, hybrid_selection, lexical_tokens, tokenize
 
 
 class LogicTests(unittest.TestCase):
@@ -45,7 +47,7 @@ class LogicTests(unittest.TestCase):
         self.assertEqual(len(ranking), 4)
 
     def test_eval_set(self):
-        cases = read_questions()
+        cases = json.loads((RAG_EVAL_DIR / 'questions.json').read_text(encoding='utf-8'))
         self.assertEqual(len(cases), 9)
         self.assertEqual(len(set(c['id'] for c in cases)), 9)
 

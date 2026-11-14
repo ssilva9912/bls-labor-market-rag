@@ -1,66 +1,49 @@
-.env
-.env.*
-!.env.example
+# Environments and caches
 .venv/
+**/.venv*/
 .uv-cache/
 .uv-python/
-.python/
-.python-install*.log
 __pycache__/
-.pytest_cache/
-index/
-results/
-docs/*.pdf
-docs/**/*.pdf
-docs/**/*.txt
-docs/*.txt
-*.pem
-*.key
-credentials*.json
-
-# Local-only working material; preserve on disk, never publish.
-/archive/
-/tmp/
-**/index/
-**/results/
-**/.venv*/
-**/__pycache__/
 *.py[cod]
+.pytest_cache/
+.ruff_cache/
+**/.cache/
+
+# Local secrets
+.env
+.env.*
 **/.env
 **/.env.*
 !.env.example
-**/docs/*.pdf
-**/docs/**/*.pdf
-**/.cache/
+*.pem
+*.key
+credentials*.json
+*service-account*.json
+
+# Local, rebuildable or large outputs
+index/
+results/
+/archive/
+/tmp/
 **/.ollama/
 **/models/
 *.gguf
 *.safetensors
+*.bin
+*.pt
 *.sqlite3
 *.sqlite3-*
 *.db
 *.log
-~$*
 *.zip
-*.pem
-*.key
-credentials.py
-credentials*.json
-*service-account*.json
+~$*
 
-# One-off authoring/development utilities remain in the local workspace.
-/create_analysis.py
-/record_judgments.py
-/prepare_final.py
-/package_submission.py
+# Fine-tuning: checkpoints, merged weights and exports stay local
+finetune/outputs/
+finetune/unsloth_compiled_cache/
+wandb/
 
-# Approved BLS source documents and active packaging tool are distributable.
-!docs/*_bls_*.pdf
-!submission/docs/*_bls_*.pdf
-!package_submission.py
-/compare_development.py
-/development_diagnostics.py
-/rubric_development.py
-
-# Local submission preserved; verified download is on GitHub Releases.
-/submission/
+# Only the registered BLS corpus PDFs and experiment reflections are published
+*.pdf
+!corpus/pdfs/*_bls_*.pdf
+!experiments/*/artifacts/reflection.pdf

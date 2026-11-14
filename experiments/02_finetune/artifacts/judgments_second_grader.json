@@ -1,0 +1,222 @@
+{
+  "method": "Advisory second-grader judgments by an LLM (Claude Fable 5.2, in Claude Code), made against the passages saved in outputs.jsonl and references.json using experiment-01 scoring_rubric.md, and following how experiment 01 applied the rubric to the identical base-model answers. Not blind to arm. Not the scores of record: the manual judgments in judgments.json are.",
+  "raw_sha256": "ee09343c67e74e8a5c851b07d37e3f5a71c3ef0c743a7a39188d415d71c20812",
+  "cases": {
+    "B1": {
+      "base_rag": {
+        "correctness": 0,
+        "reason": "Wrong abstention: S4 (p. 9) contains the Washington row with 4.5 for 2024.",
+        "abstention": true,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct 4.5 percent annual average, and the 0.3-point rise matches the table (4.2 to 4.5). But it cites S2 (p. 2), which has no Washington unemployment rate; the row is on S4 (p. 9).",
+        "abstention": false,
+        "citation_support": 0
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      }
+    },
+    "B2": {
+      "base_rag": {
+        "correctness": 0,
+        "reason": "Correct 4.5 figure but says the estimate was not preliminary; the column is Dec. 2024p and S4 footnotes p as Preliminary. Reverses a required qualification.",
+        "abstention": false,
+        "citation_support": 0
+      },
+      "ft_rag": {
+        "correctness": 0,
+        "reason": "Correct 4.5 figure but says the estimate was not preliminary; the column is Dec. 2024p and S4 footnotes p as Preliminary. Reverses a required qualification.",
+        "abstention": false,
+        "citation_support": 0
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      }
+    },
+    "B3": {
+      "base_rag": {
+        "correctness": 0,
+        "reason": "Both figures are right, but it then says the all-occupations answer could not be determined; self-contradictory core answer, and that claim contradicts S1.",
+        "abstention": true,
+        "citation_support": 0
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct $50,090 for production occupations and $67,920 U.S. average; both on S1 as cited.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given. Also wrongly says the May 2024 estimates are not yet released.",
+        "abstention": true
+      }
+    },
+    "B4": {
+      "base_rag": {
+        "correctness": 2,
+        "reason": "Correct totals, establishment types and component figures. Cites only S1 (p. 1), but the component figures and their changes are on S2 (p. 2).",
+        "abstention": false,
+        "citation_support": 0
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct totals and establishment types; totals cited to S1 and components to S2, where each appears.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Calls an already released result a future event and declines.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given. Also wrongly suggests the data may not be available yet.",
+        "abstention": true
+      }
+    },
+    "B5": {
+      "base_rag": {
+        "correctness": 2,
+        "reason": "Correct 5.2 million jobs, 3.1 percent growth and 175.2 million in 2034; all on S1 as cited.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct 5.2 million jobs, 3.1 percent growth and 175.2 million in 2034; all on S1 as cited.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Invents 6.3 million jobs, 0.5 percent annual growth and 173.8 million; none matches the reference.",
+        "abstention": false
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Invents 7.5 million jobs, 0.3 percent annual change and 173.6 million; none matches the reference.",
+        "abstention": false
+      }
+    },
+    "B6": {
+      "base_rag": {
+        "correctness": 2,
+        "reason": "Correct 266 higher, 95 lower, 28 unchanged of 389 areas; all on S1 as cited.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct 266 higher, 95 lower, 28 unchanged of 389 areas, stated as a year-earlier comparison; all on S1.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Says it has no access, then states invented counts (312, 64, 24) for a different year.",
+        "abstention": false
+      }
+    },
+    "B7": {
+      "base_rag": {
+        "correctness": 2,
+        "reason": "Correct 256,000 payroll increase and 4.1 percent unemployment; both on S1 as cited.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct 256,000 payroll increase and 4.1 percent unemployment; both on S1 as cited.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      }
+    },
+    "B8": {
+      "base_rag": {
+        "correctness": 2,
+        "reason": "Correct 7.6 million openings on the last business day, 5.5 million hires, 5.3 million separations; S1 supports openings and hires, S2 supports separations.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Correct 7.6 million openings, 5.5 million hires, 5.3 million separations; S1 and S2 support them. Judgment call: it says \"in December\" rather than \"on the last business day\", and its Sources line omits p. 2 although S2 is cited inline.",
+        "abstention": false,
+        "citation_support": 1
+      },
+      "base_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 0,
+        "reason": "Declines to answer an answerable question; no requested figure given.",
+        "abstention": true
+      }
+    },
+    "B9": {
+      "base_rag": {
+        "correctness": 2,
+        "reason": "Explicit abstention with the exact sentence; no tax rate invented.",
+        "abstention": true,
+        "citation_support": null
+      },
+      "ft_rag": {
+        "correctness": 2,
+        "reason": "Explicit abstention with the exact sentence; no tax rate invented.",
+        "abstention": true,
+        "citation_support": null
+      },
+      "base_closed_book": {
+        "correctness": 2,
+        "reason": "Correctly declines to give a city tax rate; offers referral advice, which is outside the criterion.",
+        "abstention": true
+      },
+      "ft_closed_book": {
+        "correctness": 2,
+        "reason": "Correctly says the releases would not establish the rate and gives none; it asserts this without having seen the releases.",
+        "abstention": true
+      }
+    }
+  }
+}
