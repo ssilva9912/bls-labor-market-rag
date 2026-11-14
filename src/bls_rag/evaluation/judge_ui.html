@@ -134,6 +134,10 @@
     font-size: .78rem; color: var(--muted); text-align: left;
   }
   .suggest button:hover { border-style: solid; color: var(--text); }
+  .hint { margin: 10px 0 0; padding: 8px 10px; border: 1px dashed var(--line); border-radius: 6px; font-size: .86rem; }
+  .hint-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; }
+  .hint-label { color: var(--muted); font-size: .76rem; text-transform: uppercase; letter-spacing: .04em; }
+  .hint-reason { color: var(--muted); margin-top: 3px; overflow-wrap: anywhere; }
   .notice { background: var(--bad-bg); color: var(--bad-text); border-radius: 8px; padding: 10px 14px; margin: 14px 16px; }
   dialog { border: 1px solid var(--line); border-radius: 10px; background: var(--panel); color: var(--text); max-width: min(960px, 94vw); padding: 18px 20px; }
   dialog::backdrop { background: rgba(0, 0, 0, .45); }
@@ -150,14 +154,16 @@
     <div class="pills" id="pills"></div>
     <span class="progress" id="progress"></span>
     <span class="spacer"></span>
+    <span class="progress" id="agreement"></span>
     <label class="blind"><input type="checkbox" id="blind" checked> Hide which model wrote each answer</label>
+    <label class="blind" id="suggest-label" hidden><input type="checkbox" id="suggest" checked> Show second grader</label>
     <button class="ghost" id="next" type="button">Next ungraded</button>
     <button class="primary" id="summary" type="button" disabled>Compute summary</button>
     <span class="save" id="save" role="status"></span>
   </div>
   <p class="keys">
     <kbd>2</kbd> correct <kbd>1</kbd> partial <kbd>0</kbd> wrong · <kbd>A</kbd> abstained ·
-    citations <kbd>Y</kbd> supported <kbd>N</kbd> not · <kbd>R</kbd> reason · <kbd>P</kbd> reference PDF ·
+    citations <kbd>Y</kbd> supported <kbd>N</kbd> not · <kbd>R</kbd> reason · <kbd>P</kbd> reference PDF · <kbd>S</kbd> accept second grader ·
     <kbd>↑</kbd><kbd>↓</kbd> answer · <kbd>←</kbd><kbd>→</kbd> question · <kbd>Enter</kbd> next ungraded
   </p>
 </header>
@@ -196,6 +202,9 @@ let saveTimer = null;
 // ---- helpers ---------------------------------------------------------------
 const normalise = token => token.replace(/[$,]/g, '');
 const ignorable = n => /^\d$/.test(n) || /^(19|20)\d\d$/.test(n);  // list numbers and years say nothing
+function passageNumbers(text) {  // PDF text sometimes splits a figure ("5. 5 million"); accept both readings
+  return new Set([...numbers(text), ...numbers((text || '').replace(/(\d)\.\s+(\d)/g, '$1.$2'))]);
+}
 function numbers(text) {
   const found = new Set();
   for (const match of (text || '').matchAll(TOKENS)) {
@@ -296,6 +305,9 @@ function renderHeader() {
   const graded = gradable.filter(([c, arm]) => !missing(c, arm).length).length;
   $('progress').textContent = `${graded} of ${gradable.length} graded`;
   $('summary').disabled = graded < gradable.length;
+  const done = gradable.filter(([c, arm]) => !missing(c, arm).length && suggestion(c, arm));
+  const same = done.filter(([c, arm]) => sameCall(judgment(c, arm), suggestion(c, arm), data.arms[arm].retrieval)).length;
+  $('agreement').textContent = done.length ? `· same as second grader on ${same} of ${done.length}` : '';
 }
 
 const PDF_ICON = '<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true">'
@@ -380,7 +392,7 @@ function renderAnswerText(target, c, arm) {
   const retrieval = data.arms[arm].retrieval;
   const [body, sources] = bodyAndSources(c.answers[arm].answer);
   const reference = numbers([c.reference_answer, ...c.required_criteria, ...c.evidence.map(e => e.supporting_excerpt)].join(' '));
-  const inPassages = new Set(c.passages.flatMap(p => [...numbers(p.content)]));
+  const inPassages = new Set(c.passages.flatMap(p => [...passageNumbers(p.content)]));
   const appendPart = (text, checkNumbers) => {
     let last = 0;
     for (const match of text.matchAll(TOKENS)) {
@@ -411,6 +423,41 @@ function renderAnswerText(target, c, arm) {
   appendPart(sources, false);
 }
 
+// ---- second grader's suggestions ---------------------------------------------
+const suggestion = (c, arm) => (data.suggestions && $('suggest').checked && data.suggestions[c.id] && data.suggestions[c.id][arm]) || null;
+const citationOf = j => [0, 1].includes(j.citation_support) ? j.citation_support : null;
+function sameCall(mine, theirs, retrieval) {
+  return mine.correctness === theirs.correctness && mine.abstention === theirs.abstention
+    && (!retrieval || citationOf(mine) === citationOf(theirs));
+}
+function acceptSuggestion(c, arm) {
+  const s = suggestion(c, arm);
+  if (!s) return;
+  const patch = {correctness: s.correctness, abstention: s.abstention, reason: s.reason};
+  if (data.arms[arm].retrieval) patch.citation_support = citationOf(s);
+  update(c, arm, patch);
+}
+function suggestionBox(c, arm) {
+  const s = suggestion(c, arm);
+  if (!s) return null;
+  const retrieval = data.arms[arm].retrieval, j = judgment(c, arm);
+  const parts = [`${s.correctness} ${['wrong', 'partial', 'correct'][s.correctness]}`, s.abstention ? 'abstained' : 'answered'];
+  if (retrieval) parts.push({1: 'citations supported', 0: 'citations not supported', null: 'citations n/a'}[citationOf(s)]);
+  const box = el('div', 'hint'), top = el('div', 'hint-top');
+  top.append(el('span', 'hint-label', 'Second grader suggests'), el('strong', '', parts.join(' · ')), el('span', 'spacer'));
+  const scored = [0, 1, 2].includes(j.correctness), same = scored && sameCall(j, s, retrieval);
+  if (scored) top.append(el('span', 'tag ' + (same ? 'good' : 'warn'), same ? 'same as yours' : 'differs from yours'));
+  if (!same) {
+    const accept = el('button', 'ghost', scored ? 'Use suggestion' : 'Accept');
+    accept.type = 'button';
+    accept.title = 'Copy the score and reason from the second grader (S)';
+    accept.addEventListener('click', event => { event.stopPropagation(); acceptSuggestion(c, arm); });
+    top.append(accept);
+  }
+  box.append(top, el('div', 'hint-reason', s.reason));
+  return box;
+}
+
 function figureChecks(c, arm) {  // which given page actually shows each figure, versus the pages cited
   const answer = c.answers[arm].answer;
   const figures = [...numbers(bodyAndSources(answer)[0])];
@@ -420,7 +467,7 @@ function figureChecks(c, arm) {  // which given page actually shows each figure,
   box.append(el('p', '', 'Figure check (an aid, not a judgment)'));
   const label = p => `S${p.rank}${p.reference ? ' (reference page)' : ''}`;
   for (const figure of figures) {
-    const holders = c.passages.filter(p => numbers(p.content).has(figure));
+    const holders = c.passages.filter(p => passageNumbers(p.content).has(figure));
     const citedHolders = holders.filter(p => cited.has(p.rank));
     const row = el('div');
     if (citedHolders.length) row.append(el('span', 'tag good', 'cited'), ` ${figure} is on ${citedHolders.map(label).join(', ')}`);
@@ -487,6 +534,8 @@ function renderAnswers() {
     card.append(answer);
     const checks = retrieval && figureChecks(c, arm);
     if (checks) card.append(checks);
+    const hint = suggestionBox(c, arm);
+    if (hint) card.append(hint);
 
     const grade = el('div', 'grade');
     grade.append(segment('Score', [['0 wrong', 0], ['1 partial', 1], ['2 correct', 2]], j.correctness, v => setScore(c, arm, v)));
@@ -590,6 +639,7 @@ document.addEventListener('keydown', event => {
   else if (key === 'y' && gradable && data.arms[arm].retrieval) update(c, arm, {citation_support: 1});
   else if (key === 'n' && gradable && data.arms[arm].retrieval) update(c, arm, {citation_support: 0});
   else if (key === 'r' && gradable) document.querySelector('.card.active .reason input').focus();
+  else if (key === 's' && gradable && suggestion(c, arm)) acceptSuggestion(c, arm);
   else if (key === 'p' && c.evidence.length) window.open(pdfUrl(c.evidence[0].filename, c.evidence[0].pdf_page), '_blank', 'noopener');
   else if (key === 'arrowdown' || key === 'j') moveAnswer(1);
   else if (key === 'arrowup' || key === 'k') moveAnswer(-1);
@@ -636,6 +686,7 @@ async function showSummary() {
 
 // ---- start -----------------------------------------------------------------
 $('blind').addEventListener('change', () => { answerIndex = 0; renderCase(); });
+$('suggest').addEventListener('change', renderCase);
 $('next').addEventListener('click', nextUngraded);
 $('summary').addEventListener('click', showSummary);
 $('dialog-close').addEventListener('click', () => $('dialog').close());
@@ -646,6 +697,8 @@ $('dialog-close').addEventListener('click', () => $('dialog').close());
     $('problem').append(el('div', 'notice', 'The grading server is not responding. Restart it with: uv run python -m bls_rag.evaluation.judge_ui'));
     return;
   }
+  $('suggest-label').hidden = !data.suggestions;
+  if (data.suggestions) $('suggest-label').title = data.suggestions_method || '';
   const firstOpen = data.cases.findIndex(c => Object.keys(c.answers).some(arm => missing(c, arm).length));
   caseIndex = firstOpen < 0 ? 0 : firstOpen;
   renderCase();

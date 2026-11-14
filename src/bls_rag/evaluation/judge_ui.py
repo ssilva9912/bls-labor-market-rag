@@ -5,6 +5,10 @@ the retrieved pages next to the four answers, and writes the manual judgments
 to ``artifacts/judgments.json`` in the format ``finetune_scoring summary``
 reads. Judging stays manual; the page only removes the JSON editing and the
 hunting for passages. Arms are hidden and shuffled by default (blind grading).
+
+If ``artifacts/judgments_second_grader.json`` exists (same format, written by a
+second grader), its judgments are shown next to each answer as suggestions the
+grader can accept or override; ``--no-suggestions`` hides them.
 """
 from __future__ import annotations
 
@@ -24,6 +28,7 @@ from bls_rag.paths import RAG_EVAL_DIR
 
 PAGE = Path(__file__).with_name('judge_ui.html')
 REFERENCES = RAG_EVAL_DIR / 'references.json'
+SECOND_GRADER = scoring.OUT / 'judgments_second_grader.json'
 MAX_REASON_CHARS = 1000
 MAX_BODY_BYTES = 16_384
 
@@ -40,7 +45,7 @@ def complete(judgment: dict, retrieval: bool) -> bool:
 class Store:
     """The frozen outputs plus the judgments file being filled in."""
 
-    def __init__(self, raw: Path, judgments: Path, references: Path = REFERENCES):
+    def __init__(self, raw: Path, judgments: Path, references: Path = REFERENCES, suggestions: Path | None = None):
         self.raw, self.path = raw, judgments
         self.lock = threading.Lock()
         self.rows = [json.loads(line) for line in raw.read_text(encoding='utf-8').splitlines() if line.strip()]
@@ -49,8 +54,14 @@ class Store:
             raise RuntimeError(f'{judgments} does not exist. Create it with: '
                                'uv run python -m bls_rag.evaluation.finetune_scoring template')
         self.judgments = json.loads(judgments.read_text(encoding='utf-8'))
-        if self.judgments.get('raw_sha256') != hashlib.sha256(raw.read_bytes()).hexdigest():
+        raw_sha256 = hashlib.sha256(raw.read_bytes()).hexdigest()
+        if self.judgments.get('raw_sha256') != raw_sha256:
             raise RuntimeError(f'{judgments} is bound to different outputs than {raw}.')
+        self.suggestions = None  # a second grader's judgments, shown as suggestions only
+        if suggestions is not None and suggestions.exists() and suggestions.resolve() != judgments.resolve():
+            self.suggestions = json.loads(suggestions.read_text(encoding='utf-8'))
+            if self.suggestions.get('raw_sha256') != raw_sha256:
+                raise RuntimeError(f'{suggestions} is bound to different outputs than {raw}.')
         self.arms = {name: {'model': arm['model'], 'retrieval': arm['retrieval']}
                      for name, arm in self.rows[0]['arms'].items()}
 
@@ -75,7 +86,9 @@ class Store:
                             for name, out in row['arms'].items()}})
         with self.lock:
             return {'arms': self.arms, 'cases': cases, 'judgments': self.judgments['cases'],
-                    'progress': self.progress(), 'file': str(self.path), 'abstention_sentence': ABSTENTION}
+                    'progress': self.progress(), 'file': str(self.path), 'abstention_sentence': ABSTENTION,
+                    'suggestions': self.suggestions and self.suggestions['cases'],
+                    'suggestions_method': self.suggestions and self.suggestions.get('method')}
 
     def save(self, payload: dict) -> dict:
         """Validate one judgment, write the file atomically and return the new progress."""
@@ -173,11 +186,15 @@ def main(argv=None) -> None:
     parser.add_argument('--no-browser', action='store_true', help='Do not open the browser automatically')
     parser.add_argument('--judgments', type=Path, default=scoring.JUDGMENTS,
                         help='Judgments file to fill in (default: the experiment file; use a copy for a second grader)')
+    parser.add_argument('--suggestions', type=Path, default=SECOND_GRADER,
+                        help='Judgments file from a second grader to show as suggestions, if it exists')
+    parser.add_argument('--no-suggestions', action='store_true', help='Grade without seeing the second grader')
     args = parser.parse_args(argv)
     try:
         if args.judgments == scoring.JUDGMENTS and not scoring.JUDGMENTS.exists():
             scoring.template()
-        server = make_server(Store(scoring.RAW, args.judgments), args.port)
+        store = Store(scoring.RAW, args.judgments, suggestions=None if args.no_suggestions else args.suggestions)
+        server = make_server(store, args.port)
     except (RuntimeError, OSError) as exc:
         raise SystemExit(f'ERROR: {exc}') from exc
     url = f'http://127.0.0.1:{server.server_address[1]}/'

@@ -92,6 +92,24 @@ class StoreTests(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             judge_ui.Store(self.raw, self.judgments, self.references)
 
+    def test_second_grader_file_is_offered_as_suggestions(self):
+        self.assertIsNone(self.store.data()['suggestions'])
+        second = self.judgments.with_name('second.json')
+        graded = json.loads(self.judgments.read_text(encoding='utf-8'))
+        graded['method'] = 'second grader'
+        graded['cases']['B1']['ft_rag'] = {'correctness': 2, 'reason': 'Right.', 'abstention': False, 'citation_support': 0}
+        second.write_text(json.dumps(graded), encoding='utf-8')
+        data = judge_ui.Store(self.raw, self.judgments, self.references, suggestions=second).data()
+        self.assertEqual(data['suggestions']['B1']['ft_rag']['correctness'], 2)
+        self.assertEqual(data['suggestions_method'], 'second grader')
+        self.assertIsNone(data['judgments']['B1']['ft_rag']['correctness'])  # suggestions never become judgments
+        # The judgments file itself is never treated as its own second grader.
+        self.assertIsNone(judge_ui.Store(self.raw, self.judgments, self.references, suggestions=self.judgments).data()['suggestions'])
+        graded['raw_sha256'] = 'other'
+        second.write_text(json.dumps(graded), encoding='utf-8')
+        with self.assertRaises(RuntimeError):
+            judge_ui.Store(self.raw, self.judgments, self.references, suggestions=second)
+
     def test_summary_refuses_a_copy_of_the_judgments_file(self):
         with self.assertRaises(webui.RequestError) as caught:
             self.store.summary()

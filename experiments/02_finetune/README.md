@@ -79,6 +79,18 @@ of the given pages actually shows it next to the pages the answer cited. The
 judgment itself stays manual. `--judgments copy.json` grades a separate copy
 (for a second grader).
 
+### LLM second grader (disclosed exception)
+
+`artifacts/judgments_second_grader.json` holds an independent set of judgments
+made by a hosted LLM (Claude, in Claude Code), not by the local models under
+test. It applied the same rubric, was not blind to arm, and is advisory: the
+scores of record are the manual ones in `judgments.json`, and `summary` reads
+only those. When that file exists the grading page shows its judgment beside
+each answer as a suggestion (`S` accepts it; the header counts agreement), so
+the manual grading was done with those suggestions visible. Start the page with
+`--no-suggestions` to grade without them. This is the one place a hosted model
+is used in the project, and it never generates or changes an answer.
+
 `summary` also reports automatic format compliance per arm (has `[S#]`,
 citations in range, `Sources:` line, exact abstention sentence), plus mean
 latency and output tokens.
