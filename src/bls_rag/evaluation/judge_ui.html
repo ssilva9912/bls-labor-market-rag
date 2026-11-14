@@ -447,8 +447,9 @@ function suggestionBox(c, arm) {
   top.append(el('span', 'hint-label', 'Second grader suggests'), el('strong', '', parts.join(' · ')), el('span', 'spacer'));
   const scored = [0, 1, 2].includes(j.correctness), same = scored && sameCall(j, s, retrieval);
   if (scored) top.append(el('span', 'tag ' + (same ? 'good' : 'warn'), same ? 'same as yours' : 'differs from yours'));
-  if (!same) {
-    const accept = el('button', 'ghost', scored ? 'Use suggestion' : 'Accept');
+  const needsReason = same && !(j.reason || '').trim();  // scores match but the reason is still empty
+  if (!same || needsReason) {
+    const accept = el('button', 'ghost', needsReason ? 'Use this reason' : scored ? 'Use suggestion' : 'Accept');
     accept.type = 'button';
     accept.title = 'Copy the score and reason from the second grader (S)';
     accept.addEventListener('click', event => { event.stopPropagation(); acceptSuggestion(c, arm); });
